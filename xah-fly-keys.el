@@ -3065,20 +3065,6 @@ minor modes loaded later may override bindings in this map.")
    ("w" . delete-frame)
    ("j" . xah-run-current-file)))
 
-;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-coding-system-keymap)
-;;  '(
-;;    ("n" . set-file-name-coding-system)
-;;    ("s" . set-next-selection-coding-system)
-;;    ("c" . universal-coding-system-argument)
-;;    ("f" . set-buffer-file-coding-system)
-;;    ("k" . set-keyboard-coding-system)
-;;    ("l" . set-language-environment)
-;;    ("p" . set-buffer-process-coding-system)
-;;    ("r" . revert-buffer-with-coding-system)
-;;    ("t" . set-terminal-coding-system)
-;;    ("x" . set-selection-coding-system)))
-
 (xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-comma-keymap)
@@ -3147,140 +3133,6 @@ minor modes loaded later may override bindings in this map.")
  indent-rigidly-map
  '(("h" . indent-rigidly-left)
    ("n" . indent-rigidly-right)))
-
-;; HHH___________________________________________________________________
-;;;; misc
-
-;; the following have keys in gnu emacs, but i decided not to give them a key, because either they are rarely used (say, 95% of emacs users usel them less than once a month ), or there is a more efficient command/workflow with key in xah-fly-keys
-
-;; C-x r w → window-configuration-to-register
-;; C-x r f → frameset-to-register
-
-;; C-x C-p   →   mark-page
-;; C-x C-l   →   downcase-region
-;; C-x C-u   →   upcase-region
-
-;; C-x C-t   →   transpose-lines
-;; C-x C-o   →   delete-blank-lines
-
-;; C-x C-r   →   find-file-read-only
-;; C-x C-v   →   find-alternate-file
-
-;; C-x =   →   what-cursor-position, use describe-char instead
-;; C-x <   →   scroll-left
-;; C-x >   →   scroll-right
-;; C-x [   →   backward-page
-;; C-x ]   →   forward-page
-;; C-x ^   →   enlarge-window
-
-;; C-x {   →   shrink-window-horizontally
-;; C-x }   →   enlarge-window-horizontally
-;; C-x DEL   →   backward-kill-sentence
-
-;; C-x C-z   →   suspend-frame
-
-;; C-x k   →   kill-buffer , use xah-close-current-buffer
-;; C-x l   →   count-lines-page
-;; C-x m   →   compose-mail
-
-;; HHH___________________________________________________________________
-;; undecided yet
-
-;; C-x e   →   kmacro-end-and-call-macro
-;; C-x q   →   kbd-macro-query
-;; C-x C-k   →   kmacro-keymap
-
-;; C-x C-d   →   list-directory
-;; C-x C-n   →   set-goal-column
-;; C-x ESC   →   Prefix Command
-;; C-x $   →   set-selective-display
-;; C-x *   →   calc-dispatch
-;; C-x -   →   shrink-window-if-larger-than-buffer
-;; C-x .   →   set-fill-prefix
-
-;; C-x 4   →   ctl-x-4-prefix
-;; C-x 5   →   ctl-x-5-prefix
-;; C-x 6   →   2C-command
-;; C-x ;   →   comment-set-column
-
-;; C-x f   →   set-fill-column
-;; C-x i   →   insert-file
-;; C-x n   →   Prefix Command
-;; C-x r   →   Prefix Command
-
-;; C-x C-k C-a   →   kmacro-add-counter
-;; C-x C-k C-c   →   kmacro-set-counter
-;; C-x C-k C-d   →   kmacro-delete-ring-head
-;; C-x C-k C-e   →   kmacro-edit-macro-repeat
-;; C-x C-k C-f   →   kmacro-set-format
-;; C-x C-k TAB   →   kmacro-insert-counter
-;; C-x C-k C-k   →   kmacro-end-or-call-macro-repeat
-;; C-x C-k C-l   →   kmacro-call-ring-2nd-repeat
-;; C-x C-k RET   →   kmacro-edit-macro
-;; C-x C-k C-n   →   kmacro-cycle-ring-next
-;; C-x C-k C-p   →   kmacro-cycle-ring-previous
-;; C-x C-k C-t   →   kmacro-swap-ring
-;; C-x C-k C-v   →   kmacro-view-macro-repeat
-;; C-x C-k SPC   →   kmacro-step-edit-macro
-;; C-x C-k b   →   kmacro-bind-to-key
-;; C-x C-k e   →   edit-kbd-macro
-;; C-x C-k l   →   kmacro-edit-lossage
-;; C-x C-k n   →   kmacro-name-last-macro
-;; C-x C-k q   →   kbd-macro-query
-
-;; HHH___________________________________________________________________
-
-;; C-x 4 C-f   →   find-file-other-window
-;; C-x 4 C-o   →   display-buffer
-;; C-x 4 .   →   find-tag-other-window
-;; C-x 4 0   →   kill-buffer-and-window
-;; C-x 4 a   →   add-change-log-entry-other-window
-;; C-x 4 b   →   switch-to-buffer-other-window
-;; C-x 4 c   →   clone-indirect-buffer-other-window
-;; C-x 4 d   →   dired-other-window
-;; C-x 4 f   →   find-file-other-window
-;; C-x 4 m   →   compose-mail-other-window
-;; C-x 4 r   →   find-file-read-only-other-window
-
-;; C-x 6 2   →   2C-two-columns
-;; C-x 6 b   →   2C-associate-buffer
-;; C-x 6 s   →   2C-split
-
-;; ctl-x-5-map
-
-;; r C-f   →   find-file-other-frame
-;; r C-o   →   display-buffer-other-frame
-;; r .   →   find-tag-other-frame
-;; r 0   →   delete-frame
-;; r 1   →   delete-other-frames
-;; r 2   →   make-frame-command
-;; r b   →   switch-to-buffer-other-frame
-;; r d   →   dired-other-frame
-;; r f   →   find-file-other-frame
-;; r m   →   compose-mail-other-frame
-;; r o   →   other-frame
-;; r r   →   find-file-read-only-other-frame
-
-;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-leader-vc-keymap)
-;;  '(
-;;    ("+" . vc-update)
-;;    ("=" . vc-diff)
-;;    ("D" . vc-root-diff)
-;;    ("L" . vc-print-root-log)
-;;    ("a" . vc-update-change-log)
-;;    ("b" . vc-switch-backend)
-;;    ("c" . vc-rollback)
-;;    ("d" . vc-dir)
-;;    ("g" . vc-annotate)
-;;    ("h" . vc-insert-headers)
-;;    ("l" . vc-print-log)
-;;    ("m" . vc-merge)
-;;    ("r" . vc-retrieve-tag)
-;;    ("s" . vc-create-tag)
-;;    ("u" . vc-revert)
-;;    ("v" . vc-next-action)
-;;    ("~" . vc-revision-other-window)))
 
 ;; HHH___________________________________________________________________
 
@@ -3376,25 +3228,6 @@ Version 2017-07-07"
   (interactive)
   (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
-
-(defun xah-fly-insert-mode-activate-newline ()
-  "Activate insertion mode, insert newline below."
-  (interactive)
-  (xah-fly-insert-mode-activate)
-  (open-line 1))
-
-(defun xah-fly-insert-mode-activate-space-before ()
-  "Insert a space, then activate insertion mode."
-  (interactive)
-  (insert " ")
-  (xah-fly-insert-mode-activate))
-
-(defun xah-fly-insert-mode-activate-space-after ()
-  "Insert a space, then activate insertion mode."
-  (interactive)
-  (insert " ")
-  (xah-fly-insert-mode-activate)
-  (left-char))
 
 ;; HHH___________________________________________________________________
 
