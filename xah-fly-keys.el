@@ -1490,77 +1490,6 @@ version 2016-07-17"
 ;; HHH___________________________________________________________________
 ;; insertion commands
 
-(defun xah-insert-date ()
-  "Insert current date time.
-Insert date in this format: yyyy-mm-dd.
-If `universal-argument' is called first, prompt for a format to use.
-If there is selection, delete it first.
-
-URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-version 2020-09-07"
-  (interactive)
-  (let (($style
-         (if current-prefix-arg
-             (string-to-number
-              (substring
-               (ido-completing-read
-                "Style:"
-                '(
-                  "1 → 2018-04-12 Thursday"
-                  "2 → 20180412224611"
-                  "3 → 2018-04-12T22:46:11-07:00"
-                  "4 → 2018-04-12 22:46:11-07:00"
-                  "5 → Thursday, April 12, 2018"
-                  "6 → Thu, Apr 12, 2018"
-                  "7 → April 12, 2018"
-                  "8 → Apr 12, 2018"
-                  )) 0 1))
-           0
-           )))
-    (when (region-active-p) (delete-region (region-beginning) (region-end)))
-    (insert
-     (cond
-      ((= $style 0)
-       ;; "2016-10-10"
-       (format-time-string "%Y-%m-%d"))
-      ((= $style 1)
-       ;; "2018-04-12 Thursday"
-
-       (format-time-string "%Y-%m-%d %A"))
-      ((= $style 2)
-       ;; "20180412224015"
-       (replace-regexp-in-string ":" "" (format-time-string "%Y%m%d%T")))
-      ((= $style 3)
-       (concat
-        (format-time-string "%Y-%m-%dT%T")
-        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-       ;; "2018-04-12T22:45:26-07:00"
-       )
-      ((= $style 4)
-       (concat
-        (format-time-string "%Y-%m-%d %T")
-        (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-       ;; "2018-04-12 22:46:11-07:00"
-       )
-      ((= $style 5)
-       (format-time-string "%A, %B %d, %Y")
-       ;; "Thursday, April 12, 2018"
-       )
-      ((= $style 6)
-       (format-time-string "%a, %b %d, %Y")
-       ;; "Thu, Apr 12, 2018"
-       )
-      ((= $style 7)
-       (format-time-string "%B %d, %Y")
-       ;; "April 12, 2018"
-       )
-      ((= $style 8)
-       (format-time-string "%b %d, %Y")
-       ;; "Apr 12, 2018"
-       )
-      (t
-       (format-time-string "%Y-%m-%d"))))))
-
 (defun xah-insert-bracket-pair (LBracket RBracket &optional WrapMethod)
   "Insert brackets around selection, word, at point, and maybe move cursor in between.
 
@@ -1642,20 +1571,9 @@ Version 2017-01-17 2021-08-12"
 (defun xah-insert-square-bracket () (interactive) (xah-insert-bracket-pair "[" "]") )
 (defun xah-insert-brace () (interactive) (xah-insert-bracket-pair "{" "}") )
 
-(defun xah-insert-double-curly-quote () (interactive) (xah-insert-bracket-pair "“" "”") )
-(defun xah-insert-curly-single-quote () (interactive) (xah-insert-bracket-pair "‘" "’") )
-(defun xah-insert-single-angle-quote () (interactive) (xah-insert-bracket-pair "‹" "›") )
-(defun xah-insert-double-angle-quote () (interactive) (xah-insert-bracket-pair "«" "»") )
 (defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\"") )
 (defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
 (defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
-(defun xah-insert-corner-bracket () (interactive) (xah-insert-bracket-pair "「" "」" ) )
-(defun xah-insert-white-corner-bracket () (interactive) (xah-insert-bracket-pair "『" "』") )
-(defun xah-insert-angle-bracket () (interactive) (xah-insert-bracket-pair "〈" "〉") )
-(defun xah-insert-double-angle-bracket () (interactive) (xah-insert-bracket-pair "《" "》") )
-(defun xah-insert-white-lenticular-bracket () (interactive) (xah-insert-bracket-pair "〖" "〗") )
-(defun xah-insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
-(defun xah-insert-tortoise-shell-bracket () (interactive) (xah-insert-bracket-pair "〔" "〕" ) )
 
 (defun xah-insert-hyphen ()
   "Insert a HYPHEN-MINUS character."
@@ -2878,24 +2796,14 @@ minor modes loaded later may override bindings in this map.")
    ("RET" . insert-char)
    ("SPC" . xah-insert-unicode)
 
-   ("W" . xah-insert-double-angle-bracket)
-   ("b" . xah-insert-black-lenticular-bracket)
    ("c" . xah-insert-ascii-single-quote)
-   ("d" . xah-insert-double-curly-quote)
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace)
-   ("i" . xah-insert-curly-single-quote)
    ("l" . xah-insert-formfeed)
-   ("m" . xah-insert-corner-bracket)
    ("n" . xah-insert-square-bracket)
-   ("p" . xah-insert-single-angle-quote)
-   ("r" . xah-insert-tortoise-shell-bracket )
    ("s" . xah-insert-string-assignment)
-   ("t" . xah-insert-paren)
-   ("u" . xah-insert-date)
-   ("w" . xah-insert-angle-bracket)
-   ("y" . xah-insert-double-angle-quote)))
+   ("t" . xah-insert-paren)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
