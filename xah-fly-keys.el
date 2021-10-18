@@ -220,26 +220,6 @@ Version 2018-06-04 2021-03-16"
             xah-right-brackets)))
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
-(defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
-
-(defun xah-forward-punct (&optional n)
-  "Move cursor to the next occurrence of punctuation.
-The list of punctuations to jump to is defined by `xah-punctuation-regex'
-
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
-  (interactive "p")
-  (re-search-forward xah-punctuation-regex nil t n))
-
-(defun xah-backward-punct (&optional n)
-  "Move cursor to the previous occurrence of punctuation.
-See `xah-forward-punct'
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
-  (interactive "p")
-  (re-search-backward xah-punctuation-regex nil t n))
-
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
@@ -276,48 +256,6 @@ Version 2016-11-22"
      ((looking-back (regexp-opt xah-right-brackets) (max (- (point) 1) 1))
       (backward-sexp))
      (t (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)))))
-
-(defun xah-forward-quote ()
-  "Move cursor to the next occurrence of \".
-If there are consecutive quotes of the same char, keep moving until none.
-Returns `t' if found, else `nil'.
-
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-07-23"
-  (interactive)
-  (if (re-search-forward "\\\"+" nil t)
-      t
-    (progn
-      (message "No more quotes after cursor..")
-      nil)))
-
-(defun xah-forward-quote-twice ()
-  "Call `xah-forward-quote' twice.
-Returns `t' if found, else `nil'.
-
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-07-23"
-  (interactive)
-  (when (xah-forward-quote)
-    (xah-forward-quote)))
-
-(defun xah-forward-quote-smart ()
-  "Move cursor to the current or next string quote.
-Place cursor at the position after the left quote.
-Repeated call will find the next string.
-
-URL `http://ergoemacs.org/emacs/emacs_navigating_keys_for_brackets.html'
-Version 2016-11-22"
-  (interactive)
-  (let (($pos (point)))
-    (if (nth 3 (syntax-ppss))
-        (progn
-          (backward-up-list 1 'ESCAPE-STRINGS 'NO-SYNTAX-CROSSING)
-          (forward-sexp)
-          (re-search-forward "\\\"" nil t))
-      (progn (re-search-forward "\\\"" nil t)))
-    (when (<= (point) $pos)
-      (progn (re-search-forward "\\\"" nil t)))))
 
 ;; HHH___________________________________________________________________
 ;; editing commands
@@ -404,22 +342,6 @@ Version 2015-08-22"
       (kill-new (buffer-string))
       (delete-region (point-min) (point-max)))))
 
-(defun xah-copy-all ()
-  "Put the whole buffer content into the `kill-ring'.
-(respects `narrow-to-region')
-Version 2016-10-06"
-  (interactive)
-  (kill-new (buffer-string))
-  (message "Buffer content copied."))
-
-(defun xah-cut-all ()
-  "Cut the whole buffer content into the `kill-ring'.
-Respects `narrow-to-region'.
-Version 2017-01-03"
-  (interactive)
-  (kill-new (buffer-string))
-  (delete-region (point-min) (point-max)))
-
 (defun xah-paste-or-paste-previous ()
   "Paste. When called repeatedly, paste previous.
 This command calls `yank', and if repeated, call `yank-pop'.
@@ -439,26 +361,6 @@ Version 2017-07-25 2020-09-08"
       (if (eq real-last-command this-command)
           (yank-pop 1)
         (yank)))))
-
-(defvar xah-show-kill-ring-separator nil "A line divider for `xah-show-kill-ring'.")
-(setq xah-show-kill-ring-separator "\n\nss_____________________________________________________________________________\n\n")
-
-(defun xah-show-kill-ring ()
-  "Insert all `kill-ring' content in a new buffer named *copy history*.
-
-URL `http://ergoemacs.org/emacs/emacs_show_kill_ring.html'
-Version 2019-12-02 2021-07-03"
-  (interactive)
-  (let (($buf (generate-new-buffer "*copy history*"))
-        (inhibit-read-only t))
-    (progn
-      (switch-to-buffer $buf)
-      (funcall 'fundamental-mode)
-      (mapc
-       (lambda (x)
-         (insert x xah-show-kill-ring-separator ))
-       kill-ring))
-    (goto-char (point-min))))
 
 (defun xah-delete-backward-char-or-bracket-text ()
   "Delete backward 1 character or delete quote/bracket pair and inner text.
@@ -556,136 +458,6 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-change-bracket-pairs ( FromChars ToChars)
-  "Change bracket pairs to another type or none.
-For example, change all parenthesis () to square brackets [].
-Works on current block or selection.
-
-When called in lisp program, FromChars or ToChars is a string of bracket pair. eg \"(paren)\",  \"[bracket]\", etc.
-The first and last characters are used. (the middle is for convenience in ido selection.)
-If the string contains “,2”, then the first 2 chars and last 2 chars are used, for example  \"[[bracket,2]]\".
-If ToChars is equal to string “none”, the brackets are deleted.
-
-URL `http://ergoemacs.org/emacs/elisp_change_brackets.html'
-Version 2020-11-01 2021-08-15"
-  (interactive
-   (let (($brackets
-          '("(paren)"
-            "{brace}"
-            "[square]"
-            "<greater>"
-            "`emacs'"
-            "`markdown`"
-            "~tilde~"
-            "=equal="
-            "\"double\""
-            "'single'"
-            "[[double square,2]]"
-            "“curly double”"
-            "‘curly single’"
-            "‹french angle›"
-            "«french double angle»"
-            "「corner」"
-            "『white corner』"
-            "【lenticular】"
-            "〖white lenticular〗"
-            "〈angle〉"
-            "《double angle》"
-            "〔tortoise〕"
-            "〘white tortoise〙"
-            "⦅white paren⦆"
-            "〚white square〛"
-            "⦃white curly⦄"
-            "〈pointing angle〉"
-            "⦑ANGLE WITH DOT⦒"
-            "⧼CURVED ANGLE⧽"
-            "⟦math square⟧"
-            "⟨math angle⟩"
-            "⟪math DOUBLE ANGLE⟫"
-            "⟮math FLATTENED PARENTHESIS⟯"
-            "⟬math WHITE TORTOISE SHELL⟭"
-            "❛HEAVY SINGLE QUOTATION MARK ORNAMENT❜"
-            "❝HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT❞"
-            "❨MEDIUM LEFT PARENTHESIS ORNAMENT❩"
-            "❪MEDIUM FLATTENED LEFT PARENTHESIS ORNAMENT❫"
-            "❴MEDIUM LEFT CURLY ORNAMENT❵"
-            "❬MEDIUM LEFT-POINTING ANGLE ORNAMENT❭"
-            "❮HEAVY LEFT-POINTING ANGLE QUOTATION MARK ORNAMENT❯"
-            "❰HEAVY LEFT-POINTING ANGLE ORNAMENT❱"
-            "none"
-            )))
-     (list
-      (ido-completing-read "Replace this:" $brackets )
-      (ido-completing-read "To:" $brackets ))))
-  (let ( $p1 $p2 )
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (let ( (case-fold-search nil) $fromLeft $fromRight $toLeft $toRight)
-          (cond
-           ((string-match ",2" FromChars  )
-            (progn
-              (setq $fromLeft (substring FromChars 0 2))
-              (setq $fromRight (substring FromChars -2))))
-           (t
-            (progn
-              (setq $fromLeft (substring FromChars 0 1))
-              (setq $fromRight (substring FromChars -1)))))
-          (cond
-           ((string-match ",2" ToChars)
-            (progn
-              (setq $toLeft (substring ToChars 0 2))
-              (setq $toRight (substring ToChars -2))))
-           ((string-match "none" ToChars)
-            (progn
-              (setq $toLeft "")
-              (setq $toRight "")))
-           (t
-            (progn
-              (setq $toLeft (substring ToChars 0 1))
-              (setq $toRight (substring ToChars -1)))))
-          (cond
-           ((string-match "markdown" FromChars)
-            (progn
-              (goto-char (point-min))
-              (while
-                  (re-search-forward "`\\([^`]+?\\)`" nil t)
-                (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "tilde" FromChars)
-            (progn
-              (goto-char (point-min))
-              (while
-                  (re-search-forward "~\\([^~]+?\\)~" nil t)
-                (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "ascii quote" FromChars)
-            (progn
-              (goto-char (point-min))
-              (while
-                  (re-search-forward "\"\\([^\"]+?\\)\"" nil t)
-                (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           ((string-match "equal" FromChars)
-            (progn
-              (goto-char (point-min))
-              (while
-                  (re-search-forward "=\\([^=]+?\\)=" nil t)
-                (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                (replace-match (concat $toLeft "\\1" $toRight ) t ))))
-           (t (progn
-                (progn
-                  (goto-char (point-min))
-                  (while (search-forward $fromLeft nil t)
-                    (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                    (replace-match $toLeft t t)))
-                (progn
-                  (goto-char (point-min))
-                  (while (search-forward $fromRight nil t)
-                    (overlay-put (make-overlay (match-beginning 0) (match-end 0)) 'face 'highlight)
-                    (replace-match $toRight t t)))))))))))
-
 (defun xah-toggle-letter-case ()
   "Toggle the letter case of current word or selection.
 Always cycle in this order: Init Caps, ALL CAPS, all lower.
@@ -713,123 +485,6 @@ Version 2020-06-26"
      ((equal 2 (get this-command 'state))
       (downcase-region $p1 $p2)
       (put this-command 'state 0)))))
-
-;; test case
-;; test_case some
-;; test-case
-;; tes▮t-case
-
-(defun xah-toggle-previous-letter-case ()
-  "Toggle the letter case of the letter to the left of cursor.
-
-URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2015-12-22"
-  (interactive)
-  (let ((case-fold-search nil))
-    (left-char 1)
-    (cond
-     ((looking-at "[[:lower:]]") (upcase-region (point) (1+ (point))))
-     ((looking-at "[[:upper:]]") (downcase-region (point) (1+ (point)))))
-    (right-char)))
-
-(defun xah-upcase-sentence ()
-  "Upcase first letters of sentences of current block or selection.
-
-URL `http://ergoemacs.org/emacs/emacs_upcase_sentence.html'
-Version 2020-12-08 2020-12-24 2021-08-13"
-  (interactive)
-  (let ($p1 $p2)
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (let ((case-fold-search nil))
-          ;; after period or question mark or exclamation
-          (goto-char (point-min))
-          (while (re-search-forward "\\(\\.\\|\\?\\|!\\)[ \n]+ *\\([a-z]\\)" nil 1)
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-          ;; after a blank line, after a bullet, or beginning of buffer
-          (goto-char (point-min))
-          (while (re-search-forward "\\(\\`\\|• \\|\n\n\\)\\([a-z]\\)" nil 1)
-            (upcase-region (match-beginning 2) (match-end 2))
-            (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))
-          ;; for HTML. first letter after tag
-          (when
-              (or
-               (eq major-mode 'xah-html-mode)
-               (eq major-mode 'html-mode)
-               (eq major-mode 'sgml-mode)
-               (eq major-mode 'nxml-mode)
-               (eq major-mode 'xml-mode)
-               (eq major-mode 'mhtml-mode))
-            (goto-char (point-min))
-            (while
-                (re-search-forward "\\(<h[1-6]>[ \n]?\\|<p>[ \n]?\\|<li>[ \n]?\\|<dd>[ \n]?\\|<td>[ \n]?\\|<br ?/?>[ \n]?\\|<figcaption>[ \n]?\\)\\([a-z]\\)" nil 1)
-              (upcase-region (match-beginning 2) (match-end 2))
-              (overlay-put (make-overlay (match-beginning 2) (match-end 2)) 'face 'highlight))))))))
-
-(defun xah-title-case-region-or-line (&optional Begin End)
-  "Title case text between nearest brackets, or current line or selection.
-Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
-
-When called in a elisp program, Begin End are region boundaries.
-
-URL `http://ergoemacs.org/emacs/elisp_title_case_text.html'
-Version 2017-01-11 2021-03-30 2021-09-19"
-  (interactive)
-  (let* (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕")
-         ($p0 (point))
-         ($p1 (if Begin
-                  Begin
-                (if (region-active-p)
-                    (region-beginning)
-                  (progn
-                    (skip-chars-backward $skipChars (line-beginning-position)) (point)))))
-         ($p2 (if End
-                  End
-                (if (region-active-p)
-                    (region-end)
-                  (progn (goto-char $p0)
-                         (skip-chars-forward $skipChars (line-end-position)) (point)))))
-         ($strPairs [
-                     [" A " " a "]
-                     [" An " " an "]
-                     [" And " " and "]
-                     [" At " " at "]
-                     [" As " " as "]
-                     [" By " " by "]
-                     [" Be " " be "]
-                     [" Into " " into "]
-                     [" In " " in "]
-                     [" Is " " is "]
-                     [" It " " it "]
-                     [" For " " for "]
-                     [" Of " " of "]
-                     [" Or " " or "]
-                     [" On " " on "]
-                     [" Via " " via "]
-                     [" The " " the "]
-                     [" That " " that "]
-                     [" To " " to "]
-                     [" Vs " " vs "]
-                     [" With " " with "]
-                     [" From " " from "]
-                     ["'S " "'s "]
-                     ["'T " "'t "]
-                     ]))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (upcase-initials-region (point-min) (point-max))
-        (let ((case-fold-search nil))
-          (mapc
-           (lambda ($x)
-             (goto-char (point-min))
-             (while
-                 (search-forward (aref $x 0) nil t)
-               (replace-match (aref $x 1) t t)))
-           $strPairs))))))
 
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
@@ -914,30 +569,6 @@ Version 2019-06-13"
      (t (progn
           (message "nothing done. logic error 40873. shouldn't reach here" ))))))
 
-(defun xah-toggle-read-novel-mode ()
-  "Setup current frame to be suitable for reading long novel/article text.
-• Set frame width to 70
-• Line wrap at word boundaries.
-• Line spacing is increased.
-• Proportional width font is used.
-Call again to toggle back.
-
-URL `http://ergoemacs.org/emacs/emacs_novel_reading_mode.html'
-Version 2019-01-30 2021-01-16"
-  (interactive)
-  (if (eq (frame-parameter (selected-frame) 'width) 70)
-      (progn
-        (set-frame-parameter (selected-frame) 'width 106)
-        (variable-pitch-mode 0)
-        (setq line-spacing nil)
-        (setq word-wrap nil))
-    (progn
-      (set-frame-parameter (selected-frame) 'width 70)
-      (variable-pitch-mode 1)
-      (setq line-spacing 0.5)
-      (setq word-wrap t)))
-  (redraw-frame (selected-frame)))
-
 (defun xah-fill-or-unfill ()
   "Reformat current block or selection to short/long line.
 First call will break into multiple short lines. Repeated call toggles between short and long lines.
@@ -956,38 +587,6 @@ Version 2020-11-22 2021-08-13"
       (let ((fill-column most-positive-fixnum ))
         (fill-region $p1 $p2)))
     (put this-command 'longline-p (not $isLongline))))
-
-(defun xah-unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'.
-
-URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
-  (interactive)
-  (let ((fill-column most-positive-fixnum))
-    (fill-paragraph)))
-
-(defun xah-unfill-region (Begin End)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'.
-
-URL `http://ergoemacs.org/emacs/emacs_unfill-paragraph.html'
-Version 2016-07-13"
-  (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region Begin End)))
-
-(defun xah-change-newline-chars-to-one (Begin End)
-  "Replace newline char sequence by just one.
-
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
-Version 2021-07-06"
-  (interactive "r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region Begin End)
-      (goto-char (point-min))
-      (while (re-search-forward "\n\n+" nil 1) (replace-match "\n")))))
 
 (defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
@@ -1053,114 +652,6 @@ Version 2021-07-05 2021-08-13"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-long-p (not $isLong)))))
 
-(defun xah-reformat-to-sentence-lines ()
-  "Reformat current block or selection into multiple lines by ending period.
-HTML anchor links “<a…>…</a>” is also placed on a new line.
-After this command is called, press space to repeat it.
-
-URL `http://ergoemacs.org/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-31"
-  (interactive)
-  (let ($p1 $p2)
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (goto-char (point-min))
-      (while (search-forward "\n" nil t) (replace-match " " ))
-      (goto-char (point-min))
-      (while (re-search-forward "  +" nil t) (replace-match " " ))
-      (goto-char (point-min))
-      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" ))
-      (goto-char (point-min))
-      (while (search-forward "<a " nil t) (replace-match "\n<a " ))
-      (goto-char (point-min))
-      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n" ))
-      (goto-char (point-max))
-      (while (eq (char-before ) 32) (delete-char -1))))
-  (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-reformat-to-sentence-lines ) $kmap)))
-
-(defun xah-space-to-newline ()
-  "Replace space sequence to a newline char in current block or selection.
-
-URL `http://ergoemacs.org/emacs/emacs_space_to_newline.html'
-Version 2017-08-19 2021-08-12 2021-09-12"
-  (interactive)
-  (let* (($bds (xah-get-bounds-of-block-or-region))
-         ($p1 (car $bds))
-         ($p2 (cdr $bds)))
-    (goto-char $p1)
-    (while (re-search-forward " +" $p2 t)
-      (replace-match "\n"))))
-
-(defun xah-slash-to-backslash (&optional Begin End)
-  "Replace slash by backslash on current line or region.
-Version 2021-07-14 2021-09-12"
-  (interactive)
-  (let ($p1 $p2)
-    (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (if (region-active-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (let ((case-fold-search nil))
-        (goto-char (point-min))
-        (while (search-forward "/" nil t)
-          (replace-match "\\\\"))))))
-
-(defun xah-backslash-to-slash (&optional Begin End)
-  "Replace backslash by slash on current line or region.
-Version 2021-09-11"
-  (interactive)
-  (let ($p1 $p2)
-    (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (if (region-active-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (let ((case-fold-search nil))
-        (goto-char (point-min))
-        (while (search-forward "\\" nil t)
-          (replace-match "/"))))))
-
-(defun xah-slash-to-double-backslash (&optional Begin End)
-  "Replace slash by double backslash on current line or region.
-Version 2021-07-14"
-  (interactive)
-  (let ($p1 $p2)
-    (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (if (region-active-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (let ((case-fold-search nil))
-        (goto-char (point-min))
-        (while (search-forward "/" nil t)
-          (replace-match "\\\\\\\\"))))))
-
-(defun xah-double-backslash-to-slash (&optional Begin End)
-  "Replace double backslash by slash on current line or region.
-Version 2021-07-14"
-  (interactive)
-  (let ($p1 $p2)
-    (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (if (region-active-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (setq $p1 (line-beginning-position) $p2 (line-end-position))))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (let ((case-fold-search nil))
-        (goto-char (point-min))
-        (while (search-forward "\\\\" nil t)
-          (replace-match "/"))))))
-
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
@@ -1181,122 +672,7 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-(defun xah-quote-lines (Begin End QuoteL QuoteR Sep)
-  "Add quotes/brackets and separator (comma) to lines.
-Act on current block or selection.
-
-For example,
-
- cat
- dog
- cow
-
-becomes
-
- \"cat\",
- \"dog\",
- \"cow\",
-
-or
-
- (cat)
- (dog)
- (cow)
-
-In lisp code, QuoteL QuoteR Sep are strings.
-
-URL `http://ergoemacs.org/emacs/emacs_quote_lines.html'
-Version 2020-06-26 2021-07-21 2021-08-15 2021-09-15"
-  (interactive
-   (let* (($bds (xah-get-bounds-of-block-or-region))
-         ($p1 (car $bds))
-         ($p2 (cdr $bds))
-         ($brackets
-          '(
-            "\"double\""
-            "'single'"
-            "(paren)"
-            "{brace}"
-            "[square]"
-            "<greater>"
-            "`emacs'"
-            "`markdown`"
-            "~tilde~"
-            "=equal="
-            "“curly double”"
-            "‘curly single’"
-            "‹french angle›"
-            "«french double angle»"
-            "「corner」"
-            "none"
-            "other"
-            )) $bktChoice $sep $sepChoice $quoteL $quoteR)
-     (setq $bktChoice (ido-completing-read "Quote to use:" $brackets))
-     (setq $sepChoice (ido-completing-read "line separator:" '("," ";" "none" "other")))
-     (cond
-      ((string-equal $bktChoice "none")
-       (setq $quoteL "" $quoteR ""))
-      ((string-equal $bktChoice "other")
-       (let (($x (read-string "Enter 2 chars, for begin/end quote:")))
-         (setq $quoteL (substring-no-properties $x 0 1)
-               $quoteR (substring-no-properties $x 1 2))))
-      (t (setq $quoteL (substring-no-properties $bktChoice 0 1)
-               $quoteR (substring-no-properties $bktChoice -1))))
-     (setq $sep
-           (cond
-            ((string-equal $sepChoice "none") "")
-            ((string-equal $sepChoice "other") (read-string "Enter separator:"))
-            (t $sepChoice)))
-     (list $p1 $p2 $quoteL $quoteR $sep)))
-  (let (($p1 Begin) ($p2 End) ($quoteL QuoteL) ($quoteR QuoteR) ($sep Sep))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (goto-char (point-min))
-        (catch 'EndReached
-          (while t
-            (skip-chars-forward "\t ")
-            (insert $quoteL)
-            (end-of-line)
-            (insert $quoteR $sep)
-            (if (eq (point) (point-max))
-                (throw 'EndReached t)
-              (forward-char))))))))
-
-(defun xah-escape-quotes (Begin End)
-  "Add slash before double quote in current line or selection.
-Double quote is codepoint 34.
-See also: `xah-unescape-quotes'
-URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
-  (save-excursion
-      (save-restriction
-        (narrow-to-region Begin End)
-        (goto-char (point-min))
-        (while (search-forward "\"" nil t)
-          (replace-match "\\\"" t t)))))
-
-(defun xah-unescape-quotes (Begin End)
-  "Replace  「\\\"」 by 「\"」 in current line or selection.
-See also: `xah-escape-quotes'
-
-URL `http://ergoemacs.org/emacs/elisp_escape_quotes.html'
-Version 2017-01-11"
-  (interactive
-   (if (region-active-p)
-       (list (region-beginning) (region-end))
-     (list (line-beginning-position) (line-end-position))))
-  (save-excursion
-    (save-restriction
-      (narrow-to-region Begin End)
-      (goto-char (point-min))
-      (while (search-forward "\\\"" nil t)
-        (replace-match "\"" t t)))))
-
+;;; FINISHED HERE
 (defun xah-dired-rename-space-to-underscore ()
   "In dired, rename current or marked files by replacing space to lowline _.
 If not in `dired', do nothing.
@@ -2672,8 +2048,6 @@ minor modes loaded later may override bindings in this map.")
    ("]" . xah-forward-punct)
    ("`" . other-frame)
 
-   ;; ("$" . xah-forward-punct)
-
    ("1" . xah-extend-selection)
    ("2" . xah-select-line)
    ("3" . delete-other-windows)
@@ -2696,7 +2070,6 @@ minor modes loaded later may override bindings in this map.")
    ("i" . xah-delete-current-text-block)
    ("j" . xah-copy-line-or-region)
    ("k" . xah-paste-or-paste-previous)
-   ;; ("l" . xah-fly-insert-mode-activate-space-before)
    ("l" . xah-insert-space-before)
    ("m" . xah-backward-left-bracket)
    ("n" . forward-char)
@@ -2859,7 +2232,7 @@ minor modes loaded later may override bindings in this map.")
    ("d" . narrow-to-page)
    ("e" . eshell)
    ;; f
-   ("g" . xah-toggle-read-novel-mode)
+   ;; g
    ("h" . widen)
    ("i" . make-frame-command)
    ("j" . flyspell-buffer)
@@ -2895,10 +2268,6 @@ minor modes loaded later may override bindings in this map.")
    ("e" . call-last-kbd-macro)
    ;; f
    ("g" . kill-rectangle)
-   ("h" . xah-change-bracket-pairs)
-   ("i" . xah-space-to-newline)
-   ("j" . xah-slash-to-backslash)
-   ("k" . xah-slash-to-double-backslash)
    ("l" . clear-rectangle)
    ;; m
    ("n" . rectangle-number-lines)
@@ -2906,10 +2275,8 @@ minor modes loaded later may override bindings in this map.")
    ("p" . kmacro-end-macro)
    ;; q
    ("r" . yank-rectangle)
-   ;; s t
-   ("u" . xah-quote-lines)
+   ;; s t u
    ;; v w
-   ("x" . xah-double-backslash-to-slash)
    ("y" . delete-whitespace-rectangle)
    ;; z
    ))
@@ -2933,7 +2300,7 @@ minor modes loaded later may override bindings in this map.")
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
    ;; a
-   ("b" . xah-reformat-to-sentence-lines)
+   ;; b
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
@@ -2943,7 +2310,6 @@ minor modes loaded later may override bindings in this map.")
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
-   ("l" . xah-escape-quotes)
    ("m" . xah-make-backup-and-save)
    ("n" . repeat-complex-command)
    ;; o
@@ -2999,7 +2365,6 @@ minor modes loaded later may override bindings in this map.")
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
-   ("6" . xah-upcase-sentence)
    ;; 7
    ;; 8
    ("9" . ispell-word)
@@ -3028,8 +2393,6 @@ minor modes loaded later may override bindings in this map.")
    ("u" . switch-to-buffer)
    ;; v
    ("w" . xah-fly-w-keymap)
-   ("x" . xah-toggle-previous-letter-case)
-   ("y" . xah-show-kill-ring)
    ;; z
    ;;
    ))
