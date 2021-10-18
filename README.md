@@ -1,3 +1,6 @@
+This is my personal fork of xah-fly-keys with unneeded features removed.
+
+
 xah-fly-keys
 ===================
 
