@@ -91,10 +91,6 @@
  ;; 【Ctrl++】 'text-scale-increase
  ;; 【Ctrl+-】 'text-scale-decrease
 
-;; To disable both Control and Meta shortcut keys, add the following lines to you init.el before (require 'xah-fly-keys):
-;; (setq xah-fly-use-control-key nil)
-;; (setq xah-fly-use-meta-key nil)
-
 ;; I highly recommend setting 【capslock】 to send 【Home】. So that it acts as `xah-fly-command-mode-activate'.
 ;; see
 ;; How to Make the CapsLock Key do Home Key
@@ -122,19 +118,6 @@
 
 (defvar xah-fly-command-mode-activate-hook nil "Hook for `xah-fly-command-mode-activate'")
 (defvar xah-fly-insert-mode-activate-hook nil "Hook for `xah-fly-insert-mode-activate'")
-
-(defcustom xah-fly-use-control-key t
-  "If nil, do not bind any control key. When t, standard keys for open, close, paste, are bound."
-  :type 'boolean
-  :group 'xah-fly-keys)
-(defcustom xah-fly-use-meta-key t
-  "If nil, do not bind any meta key."
-  :type 'boolean
-  :group 'xah-fly-keys)
-(defcustom xah-fly-use-isearch-arrows t
-  "If nil, do not bind the arrow keys to move between matches in Isearch."
-  :type 'boolean
-  :group 'xah-fly-keys)
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
@@ -2821,145 +2804,6 @@ minor modes loaded later may override bindings in this map.")
    ("<menu>" . xah-fly-command-mode-activate)
    ("<f8>" . xah-fly-command-mode-activate-no-hook))
  :direct)
-
-(when xah-fly-use-meta-key
-  (global-set-key (kbd "M-SPC") 'xah-fly-command-mode-activate)
-  (global-set-key (kbd "M-\"") 'nil) ; delete-horizontal-space
-  (global-set-key (kbd "M-!") 'nil)  ; shell-command
-  (global-set-key (kbd "M-$") 'nil)  ; ispell-word
-  (global-set-key (kbd "M-%") 'nil)  ; query-replace
-  (global-set-key (kbd "M-&") 'nil)  ; async-shell-command
-  (global-set-key (kbd "M-'") 'nil)  ; abbrev-prefix-mark
-  (global-set-key (kbd "M-(") 'nil)  ; insert-parentheses
-  (global-set-key (kbd "M-)") 'nil)  ; move-past-close-and-reindent
-  ;; (global-set-key (kbd "M-,") 'nil) ; xref-pop-marker-stack
-  ;; (global-set-key (kbd "M-.") 'nil) ; xref-find-definitions
-  (global-set-key (kbd "M-/") 'nil) ; dabbrev-expand
-  (global-set-key (kbd "M-:") 'nil) ; eval-expression
-  ;; (global-set-key (kbd "M-;") 'nil) ; comment-dwim
-  (global-set-key (kbd "M-<") 'nil) ; beginning-of-buffer
-  (global-set-key (kbd "M-=") 'nil) ; count-words-region
-  (global-set-key (kbd "M->") 'nil) ; end-of-buffer
-  ;; (global-set-key (kbd "M-?") 'nil) ; xref-find-references
-  (global-set-key (kbd "M-@") 'nil) ; mark-word
-  (global-set-key (kbd "M-^") 'nil) ; delete-indentation
-  (global-set-key (kbd "M-`") 'nil) ; tmm-menubar
-  (global-set-key (kbd "M-a") 'nil) ; backward-sentence
-  (global-set-key (kbd "M-b") 'nil) ; backward-word
-  (global-set-key (kbd "M-c") 'nil) ; capitalize-word
-  (global-set-key (kbd "M-d") 'nil) ;  kill-word
-  (global-set-key (kbd "M-e") 'nil) ; forward-sentence
-  (global-set-key (kbd "M-f") 'nil) ; forward-word
-  (global-set-key (kbd "M-g") 'nil) ; Prefix Command
-  (global-set-key (kbd "M-h") 'nil) ; mark-paragraph
-  (global-set-key (kbd "M-i") 'nil) ; tab-to-tab-stop
-  (global-set-key (kbd "M-j") 'nil) ; default-indent-new-line
-  (global-set-key (kbd "M-k") 'nil) ; kill-sentence
-  (global-set-key (kbd "M-l") 'nil) ; downcase-word
-  (global-set-key (kbd "M-m") 'nil) ; back-to-indentation
-  (global-set-key (kbd "M-o") 'nil) ; facemenu-keymap
-  (global-set-key (kbd "M-q") 'nil) ; fill-paragraph
-  (global-set-key (kbd "M-r") 'nil) ; move-to-window-line-top-bottom
-  (global-set-key (kbd "M-s") 'nil) ; Prefix Command
-  (global-set-key (kbd "M-t") 'nil) ; transpose-words
-  (global-set-key (kbd "M-u") 'nil) ; upcase-word
-  (global-set-key (kbd "M-v") 'nil) ; scroll-down-command
-  (global-set-key (kbd "M-w") 'nil) ; kill-ring-save
-  ;; (global-set-key (kbd "M-x") 'nil) ; execute-extended-command
-  ;; (global-set-key (kbd "M-y") 'nil) ; yank-pop
-  (global-set-key (kbd "M-z") 'nil)   ; zap-to-char
-  (global-set-key (kbd "M-{") 'nil)   ; backward-paragraph
-  (global-set-key (kbd "M-|") 'nil)   ; shell-command-on-region
-  (global-set-key (kbd "M-}") 'nil)   ; forward-paragraph
-  (global-set-key (kbd "M-~") 'nil)   ; not-modified
-  (global-set-key (kbd "M-DEL") 'nil) ; backward-kill-word
-  )
-
-(when xah-fly-use-control-key
-  ;; 2021-08-07 was
-  ;; (xah-fly--define-keys
-  ;;  xah-fly-shared-map
-  ;;  '(
-  ;;    ("C-1" . cmd)
-  ;;    ("C-2" . cmd)
-  ;;    ;; etc
-  ;;    )
-  ;;  :direct)
-  ;; this is a problem. because the control key and meta are not supposed to change by keyboard layout such as dvorak. They should be letter direct. Also, by setting them with xah-fly-shared-map, it becomes unchangeable, that is, if a major mode set a key for C-t, it will have no effect. Current solution is just to use global-set-key. The disadvantage is that these changes leak, that is, xah-fly-keys is turned off, these ctrl keys are still changed. Still, this is better, because xah fly keys is not really meant to be turned off. You learn it, like it, use it, or leave it. Removing the tons of default emacs control and meta keys is desirable. because there are hundres of them, confusing, and mostly useless.
-  (global-set-key (kbd "<C-S-prior>") 'xah-previous-emacs-buffer)
-  (global-set-key (kbd "<C-S-next>") 'xah-next-emacs-buffer)
-
-  (global-set-key (kbd "<C-tab>") 'xah-next-user-buffer)
-  (global-set-key (kbd "<C-S-tab>") 'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-S-iso-lefttab>") 'xah-previous-user-buffer)
-
-  (global-set-key (kbd "<C-prior>") 'xah-previous-user-buffer)
-  (global-set-key (kbd "<C-next>") 'xah-next-user-buffer)
-
-  (global-set-key (kbd "<f7>") 'xah-fly-leader-key-map)
-
-  (global-set-key (kbd "C-1") 'nil)
-  (global-set-key (kbd "C-2") 'pop-global-mark)
-  (global-set-key (kbd "C-3") 'previous-error)
-  (global-set-key (kbd "C-4") 'next-error)
-  (global-set-key (kbd "C-5") 'xah-previous-emacs-buffer)
-  (global-set-key (kbd "C-6") 'xah-next-emacs-buffer)
-  (global-set-key (kbd "C-7") 'xah-previous-user-buffer)
-  (global-set-key (kbd "C-8") 'xah-next-user-buffer)
-  (global-set-key (kbd "C-9") 'scroll-down-command)
-  (global-set-key (kbd "C-0") 'scroll-up-command)
-
-  (global-set-key (kbd "C--") 'text-scale-decrease)
-  (global-set-key (kbd "C-=") 'text-scale-increase)
-
-  (global-set-key (kbd "C-S-n") 'make-frame-command)
-  (global-set-key (kbd "C-S-s") 'write-file)
-  (global-set-key (kbd "C-S-t") 'xah-open-last-closed)
-
-  (global-set-key (kbd "C-@") 'nil)
-
-  (global-set-key (kbd "C-a") 'mark-whole-buffer)
-  (global-set-key (kbd "C-b") 'nil)
-  ;; (global-set-key (kbd "C-c") 'nil)
-  (global-set-key (kbd "C-d") 'nil)
-  (global-set-key (kbd "C-e") 'nil)
-  (global-set-key (kbd "C-f") 'nil)
-  ;; (global-set-key (kbd "C-g") 'nil)
-  ;; (global-set-key (kbd "C-h") 'nil)
-  ;; (global-set-key (kbd "C-i") 'nil)
-  (global-set-key (kbd "C-j") 'nil)
-  (global-set-key (kbd "C-k") 'nil)
-  (global-set-key (kbd "C-l") 'nil)
-  ;; (global-set-key (kbd "C-m") 'nil)
-  (global-set-key (kbd "C-n") 'xah-new-empty-buffer)
-  (global-set-key (kbd "C-o") 'find-file)
-  (global-set-key (kbd "C-p") 'nil)
-  ;; (global-set-key (kbd "C-q") 'nil)
-  ;; (global-set-key (kbd "C-r") 'nil)
-  (global-set-key (kbd "C-s") 'save-buffer)
-  (global-set-key (kbd "C-t") 'nil)
-  ;; (global-set-key (kbd "C-u") 'nil)
-  (global-set-key (kbd "C-v") 'yank)
-  (global-set-key (kbd "C-w") 'xah-close-current-buffer)
-  ;; (global-set-key (kbd "C-x") 'nil)
-  ;; (global-set-key (kbd "C-y") 'nil)
-  (global-set-key (kbd "C-z") 'undo)
-  ;;
-  )
-
-(when xah-fly-use-isearch-arrows
-  (xah-fly--define-keys
-   isearch-mode-map
-   '(("<up>" . isearch-ring-retreat)
-     ("<down>" . isearch-ring-advance)
-     ("<left>" . isearch-repeat-backward)
-     ("<right>" . isearch-repeat-forward))
-   :direct)
-  (xah-fly--define-keys
-   minibuffer-local-isearch-map
-   '(("<left>" . isearch-reverse-exit-minibuffer)
-     ("<right>" . isearch-forward-exit-minibuffer))
-   :direct))
 
 ;; HHH___________________________________________________________________
 ;; commands related to highlight
