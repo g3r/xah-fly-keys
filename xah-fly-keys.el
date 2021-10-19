@@ -672,85 +672,6 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-;;; FINISHED HERE
-(defun xah-dired-rename-space-to-underscore ()
-  "In dired, rename current or marked files by replacing space to lowline _.
-If not in `dired', do nothing.
-
-URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04 2020-03-03"
-  (interactive)
-  (require 'dired-aux)
-  (if (eq major-mode 'dired-mode)
-      (let ((markedFiles (dired-get-marked-files )))
-        (mapc (lambda (x)
-                (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "_" x) nil)))
-              markedFiles)
-        ;; (dired-next-line 1)
-        (revert-buffer)
-        )
-    (user-error "Not in dired")))
-
-(defun xah-dired-rename-space-to-hyphen ()
-  "In dired, rename current or marked files by replacing space to hyphen -.
-If not in `dired', do nothing.
-
-URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'
-Version 2016-10-04 2019-11-24"
-  (interactive)
-  (require 'dired-aux)
-  (if (eq major-mode 'dired-mode)
-      (progn
-        (mapc (lambda (x)
-                (when (string-match " " x )
-                  (dired-rename-file x (replace-regexp-in-string " " "-" x) nil)))
-              (dired-get-marked-files ))
-        (revert-buffer))
-    (user-error "Not in dired")))
-
-(defun xah-cycle-hyphen-lowline-space (&optional Begin End)
-  "Cycle hyphen/lowline/space chars in selection or inside quote/bracket or line, in that order.
-After this command is called, press space to repeat it.
-The region to work on is by this order:
- 1. if there is a selection, use that.
- 2. If cursor is string quote or any type of bracket, and is within current line, work on that region.
- 3. else, work on current line.
-
-URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
-Version 2019-02-12 2021-08-20"
-  (interactive)
-  ;; this function sets a property 'state. Possible values are 0 to length of $charArray.
-  (let* ($p1
-         $p2
-         ($charArray ["-" "_" " "])
-         ($n (length $charArray))
-         ($regionWasActive-p (region-active-p))
-         ($nowState (if (eq last-command this-command) (get 'xah-cycle-hyphen-lowline-space 'state) 0))
-         ($changeTo (elt $charArray $nowState)))
-    (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (if (region-active-p)
-          (setq $p1 (region-beginning) $p2 (region-end))
-        (let (($skipChars "^\"<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）"))
-          (skip-chars-backward $skipChars (line-beginning-position))
-          (setq $p1 (point))
-          (skip-chars-forward $skipChars (line-end-position))
-          (setq $p2 (point))
-          (set-mark $p1))))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $p1 $p2)
-        (goto-char (point-min))
-        (while (re-search-forward (elt $charArray (% (+ $nowState 2) $n)) (point-max) 1)
-          (replace-match $changeTo t t))))
-    (when (or (string-equal $changeTo " ") $regionWasActive-p)
-      (goto-char $p2)
-      (set-mark $p1)
-      (setq deactivate-mark nil))
-    (put 'xah-cycle-hyphen-lowline-space 'state (% (+ $nowState 1) $n)))
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-cycle-hyphen-lowline-space) $kmap)))
-
 (defun xah-copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
 Result is full path.
@@ -798,70 +719,6 @@ Version 2017-07-09 2021-08-14"
         (re-search-forward "\n[ \t]*\n+" nil 1)
         (setq $p2 (point))))
     (kill-region $p1 $p2)))
-
-(defun xah-clear-register-1 ()
-  "Clear register 1.
-See also: `xah-paste-from-register-1', `copy-to-register'.
-
-URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
-Version 2015-12-08"
-  (interactive)
-  (progn
-    (copy-to-register ?1 (point-min) (point-min))
-    (message "Cleared register 1.")))
-
-(defun xah-copy-to-register-1 ()
-  "Copy current line or selection to register 1.
-See also: `xah-paste-from-register-1', `copy-to-register'.
-
-URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
-Version 2017-01-23"
-  (interactive)
-  (let ($p1 $p2)
-    (if (region-active-p)
-         (setq $p1 (region-beginning) $p2 (region-end))
-      (setq $p1 (line-beginning-position) $p2 (line-end-position)))
-    (copy-to-register ?1 $p1 $p2)
-    (message "Copied to register 1: [%s]." (buffer-substring-no-properties $p1 $p2))))
-
-(defun xah-append-to-register-1 ()
-  "Append current line or selection to register 1.
-When no selection, append current line, with newline char.
-See also: `xah-paste-from-register-1', `copy-to-register'.
-
-URL `http://ergoemacs.org/emacs/emacs_copy_append.html'
-Version 2015-12-08 2020-09-08"
-  (interactive)
-  (let ($p1 $p2)
-    (if (region-active-p)
-         (setq $p1 (region-beginning) $p2 (region-end))
-      (setq $p1 (line-beginning-position) $p2 (line-end-position)))
-    (append-to-register ?1 $p1 $p2)
-    (with-temp-buffer (insert "\n")
-                      (append-to-register ?1 (point-min) (point-max)))
-    (message "Appended to register 1: [%s]." (buffer-substring-no-properties $p1 $p2))))
-
-(defun xah-paste-from-register-1 ()
-  "Paste text from register 1.
-See also: `xah-copy-to-register-1', `insert-register'.
-
-URL `http://ergoemacs.org/emacs/elisp_copy-paste_register_1.html'
-Version 2015-12-08"
-  (interactive)
-  (when (region-active-p)
-    (delete-region (region-beginning) (region-end)))
-  (insert-register ?1 t))
-
-(defun xah-copy-rectangle-to-kill-ring (Begin End)
-  "Copy region as column (rectangle region) to `kill-ring'
-See also: `kill-rectangle', `copy-to-register'.
-
-URL `http://ergoemacs.org/emacs/emacs_copy_rectangle_text_to_clipboard.html'
-version 2016-07-17"
-  ;; extract-rectangle suggested by YoungFrog, 2012-07-25
-  (interactive "r")
-  (require 'rect)
-  (kill-new (mapconcat 'identity (extract-rectangle Begin End) "\n")))
 
 ;; HHH___________________________________________________________________
 ;; insertion commands
@@ -951,33 +808,6 @@ Version 2017-01-17 2021-08-12"
 (defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
 (defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
 
-(defun xah-insert-hyphen ()
-  "Insert a HYPHEN-MINUS character."
-  (interactive)
-  (insert "-"))
-
-(defun xah-insert-low-line ()
-  "Insert a LOW LINE character."
-  (interactive)
-  (insert "_"))
-
-(defun xah-insert-string-assignment ()
-  "Insert =\"\""
-  (interactive)
-  (progn (insert "=\"\"")
-         (left-char)))
-
-(defun xah-insert-space-before ()
-  "Insert space before cursor."
-  (interactive)
-  (insert " "))
-
-(defun xah-insert-space-after ()
-  "Insert space after cursor"
-  (interactive)
-  (insert " ")
-  (left-char))
-
 (defun xah-insert-formfeed ()
   "Insert a form feed char (codepoint 12)"
   (interactive)
@@ -996,61 +826,6 @@ Version 2018-08-30"
     (aset buffer-display-table ?\^L
           (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
     (redraw-frame)))
-
-(defun xah-insert-column-az ()
-  "Insert letters A to Z vertically, similar to `rectangle-number-lines'.
-The commpand will prompt for a start char, and number of chars to insert.
-The start char can be any char in Unicode.
-
-URL `http://ergoemacs.org/emacs/emacs_insert-alphabets.html'
-Version 2019-03-07"
-  (interactive)
-  (let (
-        ($startChar (string-to-char (read-string "Start char: " "a")))
-        ($howmany (string-to-number (read-string "How many: " "26")))
-        ($colpos (- (point) (line-beginning-position))))
-    (dotimes ($i $howmany )
-      (progn
-        (insert-char (+ $i $startChar))
-        (forward-line)
-        (beginning-of-line)
-        (forward-char $colpos)))))
-
-(defvar xah-unicode-list nil "Associative list of Unicode symbols. First element is a Unicode character, second element is a string used as key shortcut in `ido-completing-read'")
-(setq xah-unicode-list
-      '(
-        ;; format: (str . nameOrFastKey)
-        ("_" . "underscore" )
-        ("•" . ".bullet" )
-        ("→" . "tn")
-        ("◇" . "3" )
-        ("◆" . "4" )
-        ("¤" . "2" )
-        ("…" . "...ellipsis" )
-        (" " . "nbsp" )
-        ("、" . "," )
-        ("⭑" . "9" )
-        ("🎶" . "5" )
-        ("—" . "-emdash" )
-        ("＆" . "7fullwidthAmpersand" )
-        ("↓" . "downArrow")
-        ("←" . "leftArrow")
-        ("↑" . "upArrow")
-        ("👍" . "thumbUp")
-        ("〚〛" . "whiteSquareBracket")
-        ) )
-
-(defun xah-insert-unicode ()
-  "Insert a unicode from a custom list `xah-unicode-list'.
-Version 2021-01-05"
-  (interactive)
-  (let (
-        ($str
-         (ido-completing-read
-          "Insert:" (mapcar
-                     (lambda (x)
-                       (format "%s %s" (car x) (cdr x))) xah-unicode-list))))
-    (insert (car (split-string $str " " t)))))
 
 ;; HHH___________________________________________________________________
 ;; text selection
@@ -1199,23 +974,6 @@ Version 2020-02-04"
        ;;
        ))))
 
-(defun xah-select-text-in-quote ()
-  "Select text between the nearest left and right delimiters.
-Delimiters here includes the following chars: \"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）
-This command select between any bracket chars, does not consider nesting. For example, if text is
-(a(b)c▮)
-the selected char is “c”, not “a(b)c”.
-
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2020-11-24 2021-07-11"
-  (interactive)
-  (let ( $skipChars $p1 )
-    (setq $skipChars "^\"`<>(){}[]“”‘’‹›«»「」『』【】〖〗《》〈〉〔〕（）〘〙")
-    (skip-chars-backward $skipChars)
-    (setq $p1 (point))
-    (skip-chars-forward $skipChars)
-    (set-mark $p1)))
-
 ;; HHH___________________________________________________________________
 ;; misc
 
@@ -1261,30 +1019,6 @@ Version 2016-06-19"
           (progn (previous-buffer)
                  (setq i (1+ i)))
         (progn (setq i 100))))))
-
-(defun xah-next-emacs-buffer ()
-  "Switch to the next emacs buffer.
-“emacs buffer” here is buffer whose name starts with *.
-
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
-      (setq i (1+ i)) (next-buffer))))
-
-(defun xah-previous-emacs-buffer ()
-  "Switch to the previous emacs buffer.
-“emacs buffer” here is buffer whose name starts with *.
-
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
-      (setq i (1+ i)) (previous-buffer))))
 
 (defun xah-new-empty-buffer ()
   "Create a new empty buffer.
@@ -2038,7 +1772,6 @@ minor modes loaded later may override bindings in this map.")
    ("DEL" . xah-fly-leader-key-map)
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
-   ("-" . xah-cycle-hyphen-lowline-space)
    ("." . backward-kill-word)
    (";" . xah-comment-dwim)
    ("/" . hippie-expand)
@@ -2056,7 +1789,6 @@ minor modes loaded later may override bindings in this map.")
    ("6" . xah-select-block)
    ("7" . xah-select-line)
    ("8" . xah-extend-selection)
-   ("9" . xah-select-text-in-quote)
    ("0" . xah-pop-local-mark-ring)
 
    ("a" . xah-fly-M-x)
@@ -2070,7 +1802,6 @@ minor modes loaded later may override bindings in this map.")
    ("i" . xah-delete-current-text-block)
    ("j" . xah-copy-line-or-region)
    ("k" . xah-paste-or-paste-previous)
-   ("l" . xah-insert-space-before)
    ("m" . xah-backward-left-bracket)
    ("n" . forward-char)
    ("o" . open-line)
@@ -2167,7 +1898,6 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-e-keymap)
  '(
    ("RET" . insert-char)
-   ("SPC" . xah-insert-unicode)
 
    ("c" . xah-insert-ascii-single-quote)
    ("f" . xah-insert-emacs-quote)
@@ -2175,7 +1905,6 @@ minor modes loaded later may override bindings in this map.")
    ("h" . xah-insert-brace)
    ("l" . xah-insert-formfeed)
    ("n" . xah-insert-square-bracket)
-   ("s" . xah-insert-string-assignment)
    ("t" . xah-insert-paren)))
 
 (xah-fly--define-keys
@@ -2286,15 +2015,6 @@ minor modes loaded later may override bindings in this map.")
  '(
    ("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
-
-   ("1" . xah-append-to-register-1)
-   ("2" . xah-clear-register-1)
-
-   ("3" . xah-copy-to-register-1)
-   ("4" . xah-paste-from-register-1)
-
-   ("8" . xah-clear-register-1)
-   ("7" . xah-append-to-register-1)
 
    ("." . sort-lines)
    ("," . sort-numeric-fields)
