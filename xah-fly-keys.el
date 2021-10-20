@@ -1823,8 +1823,8 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  xah-fly-shared-map
  '(("<home>" . xah-fly-command-mode-activate)
-   ("<menu>" . xah-fly-command-mode-activate)
-   ("<f8>" . xah-fly-command-mode-activate-no-hook))
+   ("<menu>" . xah-fly-command-mode-activate))
+   ;; ("<f8>" . xah-fly-command-mode-activate-no-hook))
  :direct)
 
 ;; HHH___________________________________________________________________
@@ -2163,17 +2163,17 @@ Version 2020-04-28"
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   ;; (set-face-background 'cursor "red")
-  (setq mode-line-front-space "c")
+  (setq mode-line-front-space "[NORMAL] ")
   (force-mode-line-update))
 
-(defun xah-fly-space-key ()
-  "Switch to command mode if the char before cursor is a space.
-experimental
-Version 2018-05-07"
-  (interactive)
-  (if (eq (char-before ) 32)
-      (xah-fly-command-mode-activate)
-    (insert " ")))
+;; (defun xah-fly-space-key ()
+;;   "Switch to command mode if the char before cursor is a space.
+;; experimental
+;; Version 2018-05-07"
+;;   (interactive)
+;;   (if (eq (char-before ) 32)
+;;       (xah-fly-command-mode-activate)
+;;     (insert " ")))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
   "Enter insertion mode."
@@ -2184,15 +2184,15 @@ Version 2018-05-07"
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
     ;; (set-face-background 'cursor "black")
-    (setq mode-line-front-space "i"))
+    (setq mode-line-front-space "[INSERT] "))
   (force-mode-line-update))
 
-(defun xah-fly-mode-toggle ()
-  "Switch between {insertion, command} modes."
-  (interactive)
-  (if xah-fly-insert-state-q
-      (xah-fly-command-mode-activate)
-    (xah-fly-insert-mode-activate)))
+;; (defun xah-fly-mode-toggle ()
+;;   "Switch between {insertion, command} modes."
+;;   (interactive)
+;;   (if xah-fly-insert-state-q
+;;       (xah-fly-command-mode-activate)
+;;     (xah-fly-insert-mode-activate)))
 
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
@@ -2207,11 +2207,11 @@ Version 2017-07-07"
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
-(defun xah-fly-command-mode-activate-no-hook ()
-  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
-Version 2017-07-07"
-  (interactive)
-  (xah-fly-command-mode-init))
+;; (defun xah-fly-command-mode-activate-no-hook ()
+;;   "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
+;; Version 2017-07-07"
+;;   (interactive)
+;;   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
