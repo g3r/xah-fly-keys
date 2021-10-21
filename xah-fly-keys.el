@@ -1140,108 +1140,6 @@ Version 2020-04-09 2021-02-24"
 
 ;; HHH___________________________________________________________________
 
-(defvar xah-run-current-file-before-hook nil "Hook for `xah-run-current-file'. Before the file is run.")
-
-(defvar xah-run-current-file-after-hook nil "Hook for `xah-run-current-file'. After the file is run.")
-
-(defun xah-run-current-go-file ()
-  "Run or build current golang file.
-To build, call `universal-argument' first.
-Version 2018-10-12"
-  (interactive)
-  (when (not (buffer-file-name)) (save-buffer))
-  (when (buffer-modified-p) (save-buffer))
-  (let* (
-         ($outputb "*xah-run output*")
-         (resize-mini-windows nil)
-         ($fname (buffer-file-name))
-         ;; ($fSuffix (file-name-extension $fname))
-         ($progName "go")
-         $cmdStr)
-    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
-    (if current-prefix-arg
-        (progn
-          (setq $cmdStr (format "%s build \"%s\" " $progName $fname)))
-      (progn
-        (setq $cmdStr (format "%s run \"%s\" &" $progName $fname))))
-    (progn
-      (message "running %s" $fname)
-      (message "%s" $cmdStr)
-      (shell-command $cmdStr $outputb )
-      ;;
-      )))
-
-(defvar xah-run-current-file-map nil "A association list that maps file extension to program path, used by `xah-run-current-file'. First element is file suffix, second is program name or path. You can add items to it.")
-(setq
- xah-run-current-file-map
- '(
-   ("clj" . "clj")
-   ("go" . "go run")
-   ("hs" . "runhaskell")
-   ("java" . "javac")
-   ("js" . "deno run")
-   ("latex" . "pdflatex")
-   ("mjs" . "node --experimental-modules ")
-   ("ml" . "ocaml")
-   ("php" . "php")
-   ("pl" . "perl")
-   ("ps1" . "pwsh")
-   ("py" . "python")
-   ("py2" . "python2")
-   ("py3" . "python3")
-   ("rb" . "ruby")
-   ("rkt" . "racket")
-   ("sh" . "bash")
-   ("tex" . "pdflatex")
-   ("ts" . "deno run") ; TypeScript
-   ("tsx" . "tsc")
-   ("vbs" . "cscript")
-   ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
-   ))
-
-(defun xah-run-current-file ()
-  "Execute the current file.
-For example, if the current buffer is x.py, then it'll call [python x.py] in a shell.
-Output is printed to buffer “*xah-run output*”.
-File suffix is used to determine which program to run, set in the variable `xah-run-current-file-map'.
-
-If the file is modified or not saved, save it automatically before run.
-
-URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
-Version 2020-09-24 2021-01-21"
-  (interactive)
-  (let (
-        ($outBuffer "*xah-run output*")
-        (resize-mini-windows nil)
-        ($suffixMap xah-run-current-file-map )
-        $fname
-        $fSuffix
-        $progName
-        $cmdStr)
-    (when (not (buffer-file-name)) (save-buffer))
-    (when (buffer-modified-p) (save-buffer))
-    (setq $fname (buffer-file-name))
-    (setq $fSuffix (file-name-extension $fname))
-    (setq $progName (cdr (assoc $fSuffix $suffixMap)))
-    (setq $cmdStr (concat $progName " \""   $fname "\" &"))
-    (run-hooks 'xah-run-current-file-before-hook)
-    (cond
-     ((string-equal $fSuffix "el")
-      (load $fname))
-     ((string-equal $fSuffix "go")
-      (xah-run-current-go-file))
-     ((string-equal $fSuffix "java")
-      (progn
-        (shell-command (format "javac %s" $fname) $outBuffer )
-        (shell-command (format "java %s" (file-name-sans-extension
-                                          (file-name-nondirectory $fname))) $outBuffer )))
-     (t (if $progName
-            (progn
-              (message "Running")
-              (shell-command $cmdStr $outBuffer ))
-          (error "No recognized program file suffix for this file."))))
-    (run-hooks 'xah-run-current-file-after-hook)))
-
 (defun xah-clean-empty-lines ()
   "Replace repeated blank lines to just 1, in whole buffer or selection.
 Respects `narrow-to-region'.
@@ -1931,35 +1829,25 @@ minor modes loaded later may override bindings in this map.")
  '(
    ("SPC" . xah-clean-whitespace)
    ("TAB" . move-to-column)
-
    ("." . sort-lines)
    ("," . sort-numeric-fields)
    ("'" . reverse-region)
-   ;; a
-   ;; b
+
    ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
    ("f" . goto-line )
-   ;; g
-   ;; ("h" . xah-close-current-buffer )
    ("i" . delete-non-matching-lines)
    ("j" . copy-to-register)
    ("k" . insert-register)
    ("m" . xah-make-backup-and-save)
    ("n" . repeat-complex-command)
-   ;; o
    ("p" . query-replace-regexp)
-   ;; q
    ("r" . copy-rectangle-to-register)
-   ;; s
    ("t" . repeat)
    ("u" . delete-matching-lines)
-   ;; v
    ("w" . xah-next-window-or-frame)
-   ;; x
    ("y" . delete-duplicate-lines)
-   ;; z
 ))
 
 (xah-fly--define-keys
@@ -1973,7 +1861,7 @@ minor modes loaded later may override bindings in this map.")
    ("u" . eval-region)
    ("q" . save-buffers-kill-terminal)
    ("w" . delete-frame)
-   ("j" . xah-run-current-file)))
+))
 
 (xah-fly--define-keys
  ;; kinda replacement related
