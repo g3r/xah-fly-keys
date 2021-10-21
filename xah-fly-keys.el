@@ -1036,89 +1036,6 @@ Version 2017-11-01"
     $buf
     ))
 
-(defvar xah-recently-closed-buffers nil "a Alist of recently closed buffers. Each element is (buffer name, file path). The max number to track is controlled by the variable `xah-recently-closed-buffers-max'.")
-
-(defcustom xah-recently-closed-buffers-max 40 "The maximum length for `xah-recently-closed-buffers'."
-  :type 'integer
-  :group 'xah-fly-keys)
-
-(declare-function minibuffer-keyboard-quit "delsel" ())
-(declare-function org-edit-src-save "org-src" ())
-
-(defun xah-close-current-buffer ()
-  "Close the current buffer.
-
-Similar to `kill-buffer', with the following addition:
-
-• Prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
-• If the buffer is editing a source file in an `org-mode' file, prompt the user to save before closing.
-• If the buffer is a file, add the path to the list `xah-recently-closed-buffers'.
-
-URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2018-06-11 2021-07-01"
-  (interactive)
-  (let (($isOrgMode (string-match "^*Org Src" (buffer-name))))
-    (if (active-minibuffer-window) ; if the buffer is minibuffer
-        ;; (string-equal major-mode "minibuffer-inactive-mode")
-        (minibuffer-keyboard-quit)
-      (progn
-        ;; Offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (Because `kill-buffer' does not offer to save buffers that are not associated with files.)
-        (when (and (buffer-modified-p)
-                   (xah-user-buffer-q)
-                   (not (string-equal major-mode "dired-mode"))
-                   (if (equal (buffer-file-name) nil)
-                       (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                     t))
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (save-buffer)
-            (set-buffer-modified-p nil)))
-        (when (and (buffer-modified-p)
-                   $isOrgMode)
-          (if (y-or-n-p (format "Buffer %s modified; Do you want to save? " (buffer-name)))
-              (org-edit-src-save)
-            (set-buffer-modified-p nil)))
-        ;; save to a list of closed buffer
-        (when (buffer-file-name)
-          (setq xah-recently-closed-buffers
-                (cons (cons (buffer-name) (buffer-file-name)) xah-recently-closed-buffers))
-          (when (> (length xah-recently-closed-buffers) xah-recently-closed-buffers-max)
-            (setq xah-recently-closed-buffers (butlast xah-recently-closed-buffers 1))))
-        (kill-buffer (current-buffer))))))
-
-(defun xah-open-last-closed ()
-  "Open the last closed file.
-
-URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
-  (interactive)
-  (if (> (length xah-recently-closed-buffers) 0)
-      (find-file (cdr (pop xah-recently-closed-buffers)))
-    (progn (message "No recently close buffer in this session."))))
-
-(defun xah-open-recently-closed ()
-  "Open recently closed file.
-Prompt for a choice.
-
-URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
-  (interactive)
-  (find-file (ido-completing-read "open:" (mapcar (lambda (f) (cdr f)) xah-recently-closed-buffers))))
-
-(defun xah-list-recently-closed ()
-  "List recently closed file.
-
-URL `http://ergoemacs.org/emacs/elisp_close_buffer_open_last_closed.html'
-Version 2016-06-19"
-  (interactive)
-  (let (($buf (generate-new-buffer "*recently closed*")))
-    (switch-to-buffer $buf)
-    (mapc (lambda ($f) (insert (cdr $f) "\n"))
-          xah-recently-closed-buffers)))
-
-(declare-function bookmark-maybe-load-default-file "bookmark" ())
-(defvar bookmark-alist)
-(declare-function bookmark-get-filename "bookmark" (bookmark-name-or-record))
-
 (defun xah-open-file-fast ()
   "Prompt to open a file from bookmark `bookmark-bmenu-list'.
 This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
@@ -1888,7 +1805,6 @@ minor modes loaded later may override bindings in this map.")
    ("n" . xah-new-empty-buffer)
    ("o" . xah-show-in-desktop)
    ("p" . xah-open-last-closed)
-   ("r" . xah-open-file-fast)
    ("s" . write-file)
    ("u" . xah-open-file-at-cursor)
    ("y" . xah-list-recently-closed)
@@ -2070,25 +1986,14 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
    ("SPC" . xah-fly-insert-mode-activate)
-   ("DEL" . xah-fly-insert-mode-activate)
-   ("RET" . xah-fly-M-x)
    ("TAB" . xah-fly--tab-key-map)
    ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-comma-keymap)
-   ;; - / ; = [
-   ("\\" . toggle-input-method)
-   ;; `
 
-   ;; 1
-   ;; 2
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
-   ;; 7
-   ;; 8
-   ("9" . ispell-word)
-   ;; 0
 
    ("a" . mark-whole-buffer)
    ("b" . end-of-buffer)
@@ -2096,25 +2001,18 @@ minor modes loaded later may override bindings in this map.")
    ("d" . beginning-of-buffer)
    ("e" . xah-fly-e-keymap)
    ("f" . xah-search-current-word)
-   ("g" . xah-close-current-buffer)
    ("h" . xah-fly-h-keymap)
    ("i" . kill-line)
-   ("j" . xah-copy-all-or-region)
-   ;; k
    ("l" . recenter-top-bottom)
    ("m" . dired-jump)
    ("n" . xah-fly-n-keymap)
    ("o" . exchange-point-and-mark)
    ("p" . query-replace)
-   ("q" . xah-cut-all-or-region)
    ("r" . xah-fly-r-keymap)
    ("s" . save-buffer)
    ("t" . xah-fly-t-keymap)
    ("u" . switch-to-buffer)
-   ;; v
    ("w" . xah-fly-w-keymap)
-   ;; z
-   ;;
    ))
 
 ;; HHH___________________________________________________________________
