@@ -1649,8 +1649,6 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
  '(
-   ;; ',.
-   ;; ;
    ("a" . apropos-command)
    ("b" . describe-bindings)
    ("c" . describe-char)
@@ -1665,16 +1663,9 @@ minor modes loaded later may override bindings in this map.")
    ("l" . view-lossage)
    ("m" . describe-mode)
    ("n" . describe-variable)
-   ("o" . describe-language-environment)
-   ;; p
-   ;; q
    ("r" . apropos-variable)
-   ("s" . describe-syntax)
-   ;; t
    ("u" . elisp-index-search)
-   ("v" . apropos-value)
-   ;; wxy
-   ("z" . describe-coding-system)))
+   ))
 
 (xah-fly--define-keys
  ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
