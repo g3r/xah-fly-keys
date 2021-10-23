@@ -672,37 +672,6 @@ Version 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-(defun xah-copy-file-path (&optional DirPathOnlyQ)
-  "Copy current buffer file path or dired path.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-
-If in dired, copy the current or marked files.
-
-If a buffer is not file and not dired, copy value of `default-directory'.
-
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2018-06-18 2021-09-30"
-  (interactive "P")
-  (let (($fpath
-         (if (string-equal major-mode 'dired-mode)
-             (progn
-               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
-                 (if (equal (length $result) 0)
-                     (progn default-directory )
-                   (progn $result))))
-           (if (buffer-file-name)
-               (buffer-file-name)
-             (expand-file-name default-directory)))))
-    (kill-new
-     (if DirPathOnlyQ
-         (progn
-           (message "Directory copied: %s" (file-name-directory $fpath))
-           (file-name-directory $fpath))
-       (progn
-         (message "File path copied: %s" $fpath)
-         $fpath )))))
-
 (defun xah-delete-current-text-block ()
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
@@ -1020,100 +989,6 @@ Version 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-(defun xah-new-empty-buffer ()
-  "Create a new empty buffer.
-New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
-
-It returns the buffer (for elisp programing).
-
-URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
-Version 2017-11-01"
-  (interactive)
-  (let (($buf (generate-new-buffer "untitled")))
-    (switch-to-buffer $buf)
-    (funcall initial-major-mode)
-    (setq buffer-offer-save t)
-    $buf
-    ))
-
-(defun xah-open-file-fast ()
-  "Prompt to open a file from bookmark `bookmark-bmenu-list'.
-This command is similar to `bookmark-jump', but use `ido-mode' interface, and ignore cursor position in bookmark.
-
-URL `http://ergoemacs.org/emacs/emacs_hotkey_open_file_fast.html'
-Version 2019-02-26"
-  (interactive)
-  (require 'bookmark)
-  (bookmark-maybe-load-default-file)
-  (let (($thisBookmark (ido-completing-read "Open bookmark:" (mapcar (lambda ($x) (car $x)) bookmark-alist))))
-    (find-file (bookmark-get-filename $thisBookmark))))
-
-(defun xah-open-file-at-cursor ()
-  "Open the file path under cursor.
-If there is selection, use it for path.
-If the path starts with “http://”, open the URL in browser.
-Input path can be {relative, full path, URL}.
-Path may have a trailing “:‹n›” that indicates line number, or “:‹n›:‹m›” with line and column number. If so, jump to that line number.
-If path does not have a file extension, automatically try with “.el” for elisp files.
-This command is similar to `find-file-at-point' but without prompting for confirmation.
-
-URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'
-Version 2020-10-17 2021-02-24 2021-08-14 2021-09-19"
-  (interactive)
-  (let* (($input
-          (if (region-active-p)
-              (buffer-substring-no-properties (region-beginning) (region-end))
-            (let (($p0 (point)) $p1 $p2
-                  ($pathStops "^  \t\n\"`'‘’“”|[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。\\"))
-              (skip-chars-backward $pathStops)
-              (setq $p1 (point))
-              (goto-char $p0)
-              (skip-chars-forward $pathStops)
-              (setq $p2 (point))
-              (goto-char $p0)
-              (buffer-substring-no-properties $p1 $p2))))
-         ($path (replace-regexp-in-string "^/C:/" "/" (replace-regexp-in-string "^file://" "" (replace-regexp-in-string ":\\'" "" $input)))))
-    (if (string-match-p "\\`https?://" $path)
-        (if (fboundp 'xahsite-url-to-filepath)
-            (let (($x (xahsite-url-to-filepath $path)))
-              (if (string-match "^http" $x)
-                  (browse-url $x)
-                (find-file $x)))
-          (progn (browse-url $path)))
-      (progn ; not starting “http://”
-        (if (string-match "#" $path)
-            (let (($fpath (substring $path 0 (match-beginning 0)))
-                  ($fractPart (substring $path (1+ (match-beginning 0)))))
-              (if (file-exists-p $fpath)
-                  (progn
-                    (find-file $fpath)
-                    (goto-char (point-min))
-                    (search-forward $fractPart))
-                (when (y-or-n-p (format "file does not exist: [%s]. Create?" $fpath))
-                  (find-file $fpath))))
-          (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\'" $path)
-              (let (($fpath (match-string-no-properties 1 $path))
-                    ($lineNum (string-to-number (match-string-no-properties 2 $path))))
-                (if (file-exists-p $fpath)
-                    (progn
-                      (find-file $fpath)
-                      (goto-char (point-min))
-                      (forward-line (1- $lineNum)))
-                  (when (y-or-n-p (format "file does not exist: [%s]. Create?" $fpath))
-                    (find-file $fpath))))
-            (if (file-exists-p $path)
-                (progn ; open f.ts instead of f.js
-                  (let (($ext (file-name-extension $path))
-                        ($fnamecore (file-name-sans-extension $path)))
-                    (if (and (string-equal $ext "js")
-                             (file-exists-p (concat $fnamecore ".ts")))
-                        (find-file (concat $fnamecore ".ts"))
-                      (find-file $path))))
-              (if (file-exists-p (concat $path ".el"))
-                  (find-file (concat $path ".el"))
-                (when (y-or-n-p (format "file does not exist: [%s]. Create?" $path))
-                  (find-file $path))))))))))
-
 (if (version<= emacs-version "26.0.50")
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
@@ -1206,117 +1081,6 @@ Version 2015-04-09"
     (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
 
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
-
-(defun xah-show-in-desktop ()
-  "Show current file in desktop.
- (Mac Finder, Windows Explorer, Linux file manager)
-This command can be called when in a file buffer or in `dired'.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-20 2021-01-31"
-  (interactive)
-  (let (($path (if (eq major-mode 'dired-mode)
-                   (if (eq nil (dired-get-marked-files ))
-                       default-directory
-                     (car (dired-get-marked-files )))
-                 (if (buffer-file-name) (buffer-file-name) default-directory))))
-    (cond
-     ((string-equal system-type "windows-nt")
-      (shell-command (format "PowerShell -Command invoke-item '%s'" (expand-file-name default-directory )))
-      ;; (let ( ($cmd (format "Explorer /select,%s"  (shell-quote-argument (replace-regexp-in-string "/" "\\" $path t t )))))
-      ;;   (shell-command $cmd))
-      )
-     ((string-equal system-type "darwin")
-      (shell-command
-       (concat "open -R " (shell-quote-argument $path))))
-     ((string-equal system-type "gnu/linux")
-      (let (
-            (process-connection-type nil)
-            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
-                                 "/usr/bin/gvfs-open"
-                               "/usr/bin/xdg-open")))
-        (start-process "" nil openFileProgram (shell-quote-argument $path)))
-      ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. eg with nautilus
-      ))))
-
-(defun xah-open-in-vscode ()
-  "Open current file or dir in vscode.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-02-13 2021-01-18"
-  (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) (expand-file-name default-directory ))))
-    (message "path is %s" $path)
-    (cond
-     ((string-equal system-type "darwin")
-      (shell-command (format "open -a Visual\\ Studio\\ Code.app %s" (shell-quote-argument $path))))
-     ((string-equal system-type "windows-nt")
-      ;; 2021-01-18 problem: if gnu findutils is installed, it installs a code.exe program, same name as vscode's executable. and usually in path before vscode.
-;; vs code is usually at home dir
-;; "C:\Users\joe\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd"
-      ;; the following is attemp to work around
-      ;; (shell-command
-      ;;  (format
-      ;;   "PowerShell -Command Invoke-Expression \"%s\\%s\" %s"
-      ;;   (getenv "HOMEPATH")
-      ;;   "AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-      ;;   (shell-quote-argument $path)))
-      ;; (shell-command (concat "PowerShell -Command Start-Process Code.exe -filepath " (shell-quote-argument $path)))
-      (shell-command (format "Code %s" (shell-quote-argument $path)))
-      ;;
-      )
-     ((string-equal system-type "gnu/linux")
-      (shell-command (format "code %s" (shell-quote-argument $path)))))))
-
-(defun xah-open-in-external-app (&optional Fname)
-  "Open the current file or dired marked files in external app.
-When called in emacs lisp, if Fname is given, open that.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2019-11-04 2021-07-21"
-  (interactive)
-  (let ($fileList $doIt )
-    (setq $fileList
-          (if Fname
-              (list Fname)
-            (if (string-equal major-mode "dired-mode")
-                (dired-get-marked-files)
-              (list (buffer-file-name)))))
-    (setq $doIt (if (<= (length $fileList) 5) t (y-or-n-p "Open more than 5 files? ")))
-    (when $doIt
-      (cond
-       ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda ($fpath)
-           (shell-command (concat "PowerShell -Command \"Invoke-Item -LiteralPath\" " "'" (shell-quote-argument (expand-file-name $fpath )) "'")))
-         $fileList))
-       ((string-equal system-type "darwin")
-        (mapc (lambda ($fpath) (shell-command (concat "open " (shell-quote-argument $fpath)))) $fileList))
-       ((string-equal system-type "gnu/linux")
-        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))
-       ((string-equal system-type "berkeley-unix")
-        (mapc (lambda ($fpath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" $fpath))) $fileList))))))
-
-(defun xah-open-in-terminal ()
-  "Open the current dir in a new terminal window.
-On Microsoft Windows, it starts cross-platform PowerShell pwsh. You need to have it installed.
-
-URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2020-11-21 2021-07-21"
-  (interactive)
-  (cond
-   ((string-equal system-type "windows-nt")
-    (let ((process-connection-type nil)
-          ($cmdstr
-           (format "pwsh -Command Start-Process pwsh -WorkingDirectory %s" (shell-quote-argument default-directory))))
-      ;; (start-process "" nil "powershell" "Start-Process" "powershell"  "-WorkingDirectory" default-directory)
-      (shell-command $cmdstr)))
-   ((string-equal system-type "darwin")
-    (shell-command (concat "open -a terminal " (shell-quote-argument (expand-file-name default-directory )))))
-   ((string-equal system-type "gnu/linux")
-    (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))
-   ((string-equal system-type "berkeley-unix")
-    (let ((process-connection-type nil)) (start-process "" nil "x-terminal-emulator" (concat "--working-directory=" default-directory))))))
 
 (defun xah-next-window-or-frame ()
   "Switch to next window or frame.
@@ -1616,21 +1380,12 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-c-keymap)
  '(
-   ("," . xah-open-in-external-app)
    ("." . find-file)
    ("c" . bookmark-bmenu-list)
    ("e" . ibuffer)
-   ("f" . xah-open-recently-closed)
-   ("g" . xah-open-in-terminal)
-   ("h" . recentf-open-files)
-   ("i" . xah-copy-file-path)
    ("l" . bookmark-set)
-   ("n" . xah-new-empty-buffer)
-   ("o" . xah-show-in-desktop)
-   ("p" . xah-open-last-closed)
+   ("r" . bookmark-jump)
    ("s" . write-file)
-   ("u" . xah-open-file-at-cursor)
-   ("y" . xah-list-recently-closed)
    ))
 
 (xah-fly--define-keys
