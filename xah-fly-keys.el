@@ -1181,81 +1181,6 @@ Version 2017-09-22 2021-08-27"
         (goto-char (point-max))
         (while (eq (char-before) ? ) (delete-char -1))))))
 
-(defun xah-make-backup ()
-  "Make a backup copy of current file or dired marked files.
-If in dired, backup current file or marked files.
-The backup file name is in this format
- x.html~2018-05-15_133429~
- The last part is hour, minutes, seconds.
-in the same dir. If such a file already exist, it is overwritten.
-If the current buffer is not associated with a file, nothing's done.
-
-URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2018-06-06 2020-12-18"
-  (interactive)
-  (let (($fname (buffer-file-name))
-        ($date-time-format "%Y%m%d_%H%M%S"))
-    (if $fname
-        (let (($backup-name
-               (concat $fname "~" (format-time-string $date-time-format) "~")))
-          (copy-file $fname $backup-name t)
-          (message (concat "Backup saved at: " $backup-name)))
-      (if (eq major-mode 'dired-mode)
-          (progn
-            (mapc (lambda ($x)
-                    (let (($backup-name
-                           (concat $x "~" (format-time-string $date-time-format) "~")))
-                      (copy-file $x $backup-name t)))
-                  (dired-get-marked-files))
-            (revert-buffer))
-        (user-error "buffer not file nor dired")))))
-
-(defun xah-make-backup-and-save ()
-  "Backup of current file and save, or backup dired marked files.
-For detail, see `xah-make-backup'.
-If the current buffer is not associated with a file nor dired, nothing's done.
-
-URL `http://ergoemacs.org/emacs/elisp_make-backup.html'
-Version 2015-10-14"
-  (interactive)
-  (if (buffer-file-name)
-      (progn
-        (xah-make-backup)
-        (when (buffer-modified-p)
-          (save-buffer)))
-    (progn
-      (xah-make-backup))))
-
-(defun xah-delete-current-file-make-backup ()
-  "Delete current file, makes a backup~, close the buffer.
-If buffer is not a file, copy content to `kill-ring', delete buffer.
-
-Backup filename is “‹name›~‹dateTimeStamp›~”. Existing file of the same name is overwritten. If buffer is not a file, the backup file name starts with “xx_”.
-
-Call `xah-open-last-closed' to open the backup file.
-
-URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
-Version 2018-05-15 2021-08-31 2021-09-27"
-  (interactive)
-  (if (string-equal 'dired-mode major-mode)
-      (message "In dired. Nothing is done.")
-    (let* (($fname (buffer-file-name))
-           ($backupPath
-            (concat (if $fname $fname (format "%sxx" default-directory))
-                    (format "~%s~" (format-time-string "%Y%m%dT%H%M%S")))))
-      (if $fname
-          (progn
-            (save-buffer $fname)
-            (copy-file $fname $backupPath t)
-            (when (boundp 'xah-recently-closed-buffers)
-              (push (cons nil $backupPath) xah-recently-closed-buffers))
-            (message "Deleted. Backup at [%s]. Call `xah-open-last-closed' to open." $backupPath)
-            (delete-file $fname))
-        (progn
-          (widen)
-          (kill-new  (buffer-string))))
-      (kill-buffer (current-buffer)))))
-
 ;; HHH___________________________________________________________________
 
 (defun xah-search-current-word ()
@@ -1828,39 +1753,21 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-t-keymap)
  '(
    ("SPC" . xah-clean-whitespace)
-   ("TAB" . move-to-column)
    ("." . sort-lines)
-   ("," . sort-numeric-fields)
-   ("'" . reverse-region)
 
-   ("c" . goto-char)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
-   ("f" . goto-line )
-   ("i" . delete-non-matching-lines)
-   ("j" . copy-to-register)
-   ("k" . insert-register)
-   ("m" . xah-make-backup-and-save)
-   ("n" . repeat-complex-command)
-   ("p" . query-replace-regexp)
-   ("r" . copy-rectangle-to-register)
-   ("t" . repeat)
-   ("u" . delete-matching-lines)
-   ("w" . xah-next-window-or-frame)
-   ("y" . delete-duplicate-lines)
 ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
  '(
-   ("d" . xah-delete-current-file-make-backup)
    ("." . eval-buffer)
    ("e" . eval-defun)
    ("m" . eval-last-sexp)
    ("p" . eval-expression)
    ("u" . eval-region)
    ("q" . save-buffers-kill-terminal)
-   ("w" . delete-frame)
 ))
 
 (xah-fly--define-keys
@@ -1976,12 +1883,6 @@ Version 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
-
-;; (defun xah-fly-command-mode-activate-no-hook ()
-;;   "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
-;; Version 2017-07-07"
-;;   (interactive)
-;;   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
