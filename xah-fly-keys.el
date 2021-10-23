@@ -1327,8 +1327,6 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  xah-fly-shared-map
  '(("<home>" . xah-fly-command-mode-activate)
-   ("<menu>" . xah-fly-command-mode-activate))
-   ;; ("<f8>" . xah-fly-command-mode-activate-no-hook))
  :direct)
 
 ;; HHH___________________________________________________________________
@@ -1337,14 +1335,6 @@ minor modes loaded later may override bindings in this map.")
  (define-prefix-command 'xah-fly-dot-keymap)
  ;; 2019-02-22 experiment. this is now empty. so you can use this key space for all major mode custom keys or personal keys. These highlight command isn't used much in my experience
  '(
-   ("." . highlight-symbol-at-point)
-   ("g" . unhighlight-regexp)
-   ("c" . highlight-lines-matching-regexp)
-   ("h" . highlight-regexp)
-   ("t" . highlight-phrase)
-   ;; ("p" . isearch-forward-symbol-at-point)
-   ;; ("c" . isearch-forward-symbol)
-   ;; ("h" . isearch-forward-word)
    ))
 
 (xah-fly--define-keys
@@ -1355,14 +1345,10 @@ minor modes loaded later may override bindings in this map.")
  ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
  ;; To customize this keymap see http://ergoemacs.org/misc/xah-fly-keys_customization.html.
  '(
-   ("TAB" . indent-for-tab-command)
-
-   ("i" . complete-symbol)
    ("g" . indent-rigidly)
    ("r" . indent-region)
    ("s" . indent-sexp)
-
-   ;; temp
+   
    ("1" . abbrev-prefix-mark)
    ("2" . edit-abbrevs)
    ("3" . expand-abbrev)
@@ -1372,8 +1358,7 @@ minor modes loaded later may override bindings in this map.")
    ("7" . add-mode-abbrev)
    ("8" . inverse-add-global-abbrev)
    ("9" . inverse-add-mode-abbrev)
-   ("0" . expand-jump-to-next-slot)
-   ("=" . expand-jump-to-previous-slot)))
+   ))
 
 ;; HHH___________________________________________________________________
 
