@@ -1952,15 +1952,6 @@ Version 2020-04-28"
   (setq mode-line-front-space (concat (propertize "NORMAL" 'face '(:foreground "burlywood1" :background "firebrick4")) " "))
   (force-mode-line-update))
 
-;; (defun xah-fly-space-key ()
-;;   "Switch to command mode if the char before cursor is a space.
-;; experimental
-;; Version 2018-05-07"
-;;   (interactive)
-;;   (if (eq (char-before ) 32)
-;;       (xah-fly-command-mode-activate)
-;;     (insert " ")))
-
 (defun xah-fly-insert-mode-init (&optional no-indication)
   "Enter insertion mode."
   (interactive)
@@ -1972,13 +1963,6 @@ Version 2020-04-28"
     ;; (set-face-background 'cursor "black")
     (setq mode-line-front-space (concat (propertize "INSERT" 'face '(:foreground "burlywood1" :background "royalblue4")) " ")))
   (force-mode-line-update))
-
-;; (defun xah-fly-mode-toggle ()
-;;   "Switch between {insertion, command} modes."
-;;   (interactive)
-;;   (if xah-fly-insert-state-q
-;;       (xah-fly-command-mode-activate)
-;;     (xah-fly-insert-mode-activate)))
 
 (defun xah-fly-save-buffer-if-file ()
   "Save current buffer if it is a file."
