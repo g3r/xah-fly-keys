@@ -220,25 +220,6 @@ Version 2018-06-04 2021-03-16"
             xah-right-brackets)))
   (setq xah-right-brackets (reverse xah-right-brackets)))
 
-defvar xah-punctuation-regex nil "A regex string for the purpose of moving cursor to a punctuation.")
-(setq xah-punctuation-regex "[!\?\"\.,`'#$%&*+:;=@^|~]+")
-
-(defun xah-forward-punct (&optional n)
-  "Move cursor to the next occurrence of punctuation.
-The list of punctuations to jump to is defined by `xah-punctuation-regex'
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
-  (interactive "p")
-  (re-search-forward xah-punctuation-regex nil t n))
-
-(defun xah-backward-punct (&optional n)
-  "Move cursor to the previous occurrence of punctuation.
-See `xah-forward-punct'
-URL `http://ergoemacs.org/emacs/emacs_jump_to_punctuations.html'
-Version 2017-06-26"
-  (interactive "p")
-  (re-search-backward xah-punctuation-regex nil t n))
-
 (defun xah-backward-left-bracket ()
   "Move cursor to the previous occurrence of left bracket.
 The list of brackets to jump to is defined by `xah-left-brackets'.
