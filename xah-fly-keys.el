@@ -458,34 +458,6 @@ Version 2017-07-02"
       (goto-char $pt)
       (delete-char 1))))
 
-(defun xah-toggle-letter-case ()
-  "Toggle the letter case of current word or selection.
-Always cycle in this order: Init Caps, ALL CAPS, all lower.
-
-URL `http://ergoemacs.org/emacs/modernization_upcase-word.html'
-Version 2020-06-26"
-  (interactive)
-  (let ( (deactivate-mark nil) $p1 $p2)
-    (if (region-active-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (skip-chars-backward "[:alpha:]")
-        (setq $p1 (point))
-        (skip-chars-forward "[:alpha:]")
-        (setq $p2 (point))))
-    (when (not (eq last-command this-command))
-      (put this-command 'state 0))
-    (cond
-     ((equal 0 (get this-command 'state))
-      (upcase-initials-region $p1 $p2)
-      (put this-command 'state 1))
-     ((equal 1 (get this-command 'state))
-      (upcase-region $p1 $p2)
-      (put this-command 'state 2))
-     ((equal 2 (get this-command 'state))
-      (downcase-region $p1 $p2)
-      (put this-command 'state 0)))))
-
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
 
@@ -1082,26 +1054,6 @@ Version 2015-04-09"
 
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
 
-(defun xah-next-window-or-frame ()
-  "Switch to next window or frame.
-If current frame has only one window, switch to next frame.
-If `universal-argument' is called first, do switch frame.
-Version 2017-01-27"
-  (interactive)
-  (if current-prefix-arg
-      (other-frame 1)
-    (if (one-window-p)
-        (other-frame 1)
-      (other-window 1))))
-
-(defun xah-unsplit-window-or-next-frame ()
-  "Unsplit window. If current frame has only one window, switch to next frame.
-Version 2017-01-29"
-  (interactive)
-  (if (one-window-p)
-      (other-frame 1)
-    (delete-other-windows)))
-
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
@@ -1281,18 +1233,12 @@ minor modes loaded later may override bindings in this map.")
    ("/" . hippie-expand)
    ("\\" . nil)
    ("=" . nil)
-   ("[" . xah-backward-punct )
-   ("]" . xah-forward-punct)
-   ("`" . other-frame)
 
    ("1" . xah-extend-selection)
    ("2" . xah-select-line)
    ("3" . delete-other-windows)
    ("4" . split-window-below)
-   ("5" . delete-char)
    ("6" . xah-select-block)
-   ("7" . xah-select-line)
-   ("8" . xah-extend-selection)
    ("0" . xah-pop-local-mark-ring)
 
    ("a" . xah-fly-M-x)
@@ -1316,8 +1262,7 @@ minor modes loaded later may override bindings in this map.")
    ("t" . next-line)
    ("u" . xah-fly-insert-mode-activate)
    ("v" . xah-forward-right-bracket)
-   ("w" . xah-next-window-or-frame)
-   ("x" . xah-toggle-letter-case)
+   ("w" . other-window)
    ("y" . set-mark-command)
    ("z" . xah-goto-matching-bracket)))
 
