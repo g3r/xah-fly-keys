@@ -749,25 +749,6 @@ Version 2017-01-17 2021-08-12"
 (defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
 (defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
 
-(defun xah-insert-formfeed ()
-  "Insert a form feed char (codepoint 12)"
-  (interactive)
-  (insert "\n\u000c\n"))
-
-(defun xah-show-formfeed-as-line ()
-  "Display the formfeed ^L char as line.
-
-URL `http://ergoemacs.org/emacs/emacs_form_feed_section_paging.html'
-Version 2018-08-30"
-  (interactive)
-  ;; 2016-10-11 thanks to Steve Purcell's page-break-lines.el
-  (progn
-    (when (not buffer-display-table)
-      (setq buffer-display-table (make-display-table)))
-    (aset buffer-display-table ?\^L
-          (vconcat (make-list 70 (make-glyph-code ?─ 'font-lock-comment-face))))
-    (redraw-frame)))
-
 ;; HHH___________________________________________________________________
 ;; text selection
 
@@ -1328,7 +1309,6 @@ minor modes loaded later may override bindings in this map.")
    ("f" . xah-insert-emacs-quote)
    ("g" . xah-insert-ascii-double-quote)
    ("h" . xah-insert-brace)
-   ("l" . xah-insert-formfeed)
    ("n" . xah-insert-square-bracket)
    ("t" . xah-insert-paren)))
 
