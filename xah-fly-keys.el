@@ -1479,7 +1479,7 @@ Version 2020-04-28"
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   ;; (set-face-background 'cursor "red")
-  (setq mode-line-front-space (concat (propertize "NORMAL" 'face '(:foreground "burlywood1" :background "firebrick4")) " "))
+  (setq mode-line-front-space (concat (propertize " NORMAL " 'face '(:foreground "burlywood1" :background "firebrick4")) " "))
   (force-mode-line-update))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
@@ -1491,7 +1491,7 @@ Version 2020-04-28"
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
     ;; (set-face-background 'cursor "black")
-    (setq mode-line-front-space (concat (propertize "INSERT" 'face '(:foreground "burlywood1" :background "royalblue4")) " ")))
+    (setq mode-line-front-space (concat (propertize " INSERT " 'face '(:foreground "burlywood1" :background "royalblue4")) " ")))
   (force-mode-line-update))
 
 (defun xah-fly-save-buffer-if-file ()
