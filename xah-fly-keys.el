@@ -195,9 +195,9 @@ Version 2018-06-04 2021-03-16"
       (end-of-line))))
 
 (defvar xah-brackets nil "string of left/right brackets pairs.")
-(setq xah-brackets "()[]{}<>＜＞（）［］｛｝⦅⦆〚〛⦃⦄“”‘’‹›«»「」〈〉《》【】〔〕⦗⦘『』〖〗〘〙｢｣⟦⟧⟨⟩⟪⟫⟮⟯⟬⟭⌈⌉⌊⌋⦇⦈⦉⦊❛❜❝❞❨❩❪❫❴❵❬❭❮❯❰❱❲❳〈〉⦑⦒⧼⧽﹙﹚﹛﹜﹝﹞⁽⁾₍₎⦋⦌⦍⦎⦏⦐⁅⁆⸢⸣⸤⸥⟅⟆⦓⦔⦕⦖⸦⸧⸨⸩｟｠")
+(setq xah-brackets "()[]{}<>")
 
-(defvar xah-left-brackets '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«" "〘")
+(defvar xah-left-brackets '( "(" "{" "[" "<")
   "List of left bracket chars.")
 
 (progn
@@ -209,7 +209,7 @@ Version 2018-06-04 2021-03-16"
             xah-left-brackets)))
   (setq xah-left-brackets (reverse xah-left-brackets)))
 
-(defvar xah-right-brackets '( ")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»" "〙")
+(defvar xah-right-brackets '( ")" "]" "}" ">")
   "list of right bracket chars.")
 
 (progn
