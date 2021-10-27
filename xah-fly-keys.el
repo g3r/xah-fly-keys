@@ -1478,7 +1478,7 @@ Version 2020-04-28"
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  ;; (set-face-background 'cursor "red")
+  (set-face-background 'cursor "firebrick1")
   (setq mode-line-front-space (concat (propertize " NORMAL " 'face '(:foreground "burlywood1" :background "firebrick4")) " "))
   (force-mode-line-update))
 
@@ -1490,7 +1490,7 @@ Version 2020-04-28"
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
-    ;; (set-face-background 'cursor "black")
+    (set-face-background 'cursor "chartreuse")
     (setq mode-line-front-space (concat (propertize " INSERT " 'face '(:foreground "burlywood1" :background "royalblue4")) " ")))
   (force-mode-line-update))
 
