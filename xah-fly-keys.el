@@ -1252,8 +1252,8 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  xah-fly-shared-map
- '(("<home>" . xah-fly-command-mode-activate)
-   ("<menu>" . xah-fly-command-mode-activate))
+ '(("<home>" . xah-fly-command-mode-activate))
+   ;; ("<menu>" . xah-fly-command-mode-activate))
  :direct)
 
 ;; HHH___________________________________________________________________
