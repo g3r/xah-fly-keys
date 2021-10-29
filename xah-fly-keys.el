@@ -104,12 +104,6 @@
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;; HHH___________________________________________________________________
-;;; Code:
-
-(require 'dired) ; in emacs
-(require 'dired-x) ; in emacs
-
-;; HHH___________________________________________________________________
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
