@@ -108,7 +108,6 @@
 
 (require 'dired) ; in emacs
 (require 'dired-x) ; in emacs
-(require 'ido) ; in emacs
 
 ;; HHH___________________________________________________________________
 
