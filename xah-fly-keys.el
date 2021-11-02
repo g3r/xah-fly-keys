@@ -1446,7 +1446,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
       ;; Construction:
       (progn
         (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-        (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+        ;; (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
@@ -1456,7 +1456,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
         (xah-fly-command-mode-activate-no-hook))
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-    (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
+    ;; (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
     (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
     (remove-hook 'eshell-mode-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'shell-mode-hook 'xah-fly-insert-mode-activate)
