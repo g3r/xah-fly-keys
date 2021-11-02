@@ -1418,6 +1418,12 @@ Version 2017-07-07"
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
+(defun xah-fly-command-mode-activate-no-hook ()
+  "Activate command mode without running `xah-fly-command-mode-activate-hook'
+Version 2017-07-07"
+  (interactive)
+  (xah-fly-command-mode-init))
+
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
 Version 2017-07-07"
@@ -1447,7 +1453,7 @@ URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
                                                     xah-fly-insert-map))))
           (set-keymap-parent xah-fly-key-map xah-fly-shared-map)
           (setq xah-fly-shared-map xah-fly-key-map))
-        (xah-fly-command-mode-activate))
+        (xah-fly-command-mode-activate-no-hook))
     ;; Teardown:
     (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
     (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
