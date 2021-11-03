@@ -1208,7 +1208,6 @@ minor modes loaded later may override bindings in this map.")
    ("e" . ibuffer)
    ("l" . bookmark-set)
    ("r" . bookmark-jump)
-   ("s" . write-file)
    ))
 
 (xah-fly--define-keys
