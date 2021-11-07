@@ -1155,8 +1155,7 @@ minor modes loaded later may override bindings in this map.")
    ("u" . xah-fly-insert-mode-activate)
    ("v" . forward-list)
    ("w" . other-window)
-   ("y" . set-mark-command)
-   ("z" . xah-goto-matching-bracket)))
+   ("y" . set-mark-command)))
 
 ;; HHH___________________________________________________________________
 ;; set control meta, etc keys
