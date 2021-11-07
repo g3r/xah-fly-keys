@@ -554,26 +554,6 @@ Version 2021-07-05 2021-08-13"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-long-p (not $isLong)))))
 
-(defun xah-comment-dwim ()
-  "Like `comment-dwim', but toggle comment if cursor is not at end of line.
-
-URL `http://ergoemacs.org/emacs/emacs_toggle_comment_by_line.html'
-Version 2016-10-25"
-  (interactive)
-  (if (region-active-p)
-      (comment-dwim nil)
-    (let (($lbp (line-beginning-position))
-          ($lep (line-end-position)))
-      (if (eq $lbp $lep)
-          (progn
-            (comment-dwim nil))
-        (if (eq (point) $lep)
-            (progn
-              (comment-dwim nil))
-          (progn
-            (comment-or-uncomment-region $lbp $lep)
-            (forward-line )))))))
-
 (defun xah-delete-current-text-block ()
   "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
 
@@ -1121,7 +1101,7 @@ minor modes loaded later may override bindings in this map.")
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
    ("." . backward-kill-word)
-   (";" . xah-comment-dwim)
+   (";" . comment-line)
    ("/" . hippie-expand)
    ("\\" . nil)
    ("=" . nil)
