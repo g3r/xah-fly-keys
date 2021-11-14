@@ -985,7 +985,7 @@ If the value is nil, it is automatically set to \"dvorak\"."
                (set Layout-var New-layout)
                (load "xah-fly-keys"))
            (set Layout-var New-layout))))
-(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'qwerty))
+(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
 
 (defvar xah-fly--current-layout-kmap nil
   "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
