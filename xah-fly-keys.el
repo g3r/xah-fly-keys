@@ -898,8 +898,6 @@ Version 2017-09-22 2021-08-27"
         (goto-char (point-max))
         (while (eq (char-before) ? ) (delete-char -1))))))
 
-(declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
-
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
