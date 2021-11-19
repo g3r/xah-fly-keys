@@ -28,12 +28,10 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (require 'xah-fly-keys)
-;; (xah-fly-keys-set-layout "qwerty") ; required
 
 ;; possible layout values:
 
 ;; dvorak
-;; qwerty
 
 ;; (xah-fly-keys 1)
 
@@ -933,72 +931,13 @@ Version 2015-04-09"
   '()
   "A alist, dvorak to dvorak.")
 
-(defvar xah--dvorak-to-qwerty-kmap
-  '(("." . "e")
-    ("," . "w")
-    ("'" . "q")
-    (";" . "z")
-    ("/" . "[")
-    ("[" . "-")
-    ("]" . "=")
-    ("=" . "]")
-    ("-" . "'")
-    ("a" . "a")
-    ("b" . "n")
-    ("c" . "i")
-    ("d" . "h")
-    ("e" . "d")
-    ("f" . "y")
-    ("g" . "u")
-    ("h" . "j")
-    ("i" . "g")
-    ("j" . "c")
-    ("k" . "v")
-    ("l" . "p")
-    ("n" . "l")
-    ("o" . "s")
-    ("p" . "r")
-    ("q" . "x")
-    ("r" . "o")
-    ("s" . ";")
-    ("t" . "k")
-    ("u" . "f")
-    ("v" . ".")
-    ("w" . ",")
-    ("x" . "b")
-    ("y" . "t")
-    ("z" . "/"))
-  "A alist, each element is of the form(\"e\" . \"d\"). First char is Dvorak, second is corresponding QWERTY. Not all chars are in the list, such as digits. When not in this alist, they are assumed to be the same.")
-
-(defcustom xah-fly-key-current-layout nil
-  "The current keyboard layout. Use `xah-fly-keys-set-layout' to set the layout.
-If the value is nil, it is automatically set to \"dvorak\"."
-  :type '(choice
-          (const :tag "Dvorak" dvorak)
-          (const :tag "QWERTY" qwerty))
-  :group 'xah-fly-keys
-  :set (lambda (Layout-var New-layout)
-         ;; Only reload xah-fly-keys if it was already loaded and the new layout is different:
-         (if (and (featurep 'xah-fly-keys)
-                  (not (eq New-layout (symbol-value Layout-var))))
-             (progn
-               (set Layout-var New-layout)
-               (load "xah-fly-keys"))
-           (set Layout-var New-layout))))
-(if xah-fly-key-current-layout nil (setq xah-fly-key-current-layout 'dvorak))
+(setq xah-fly-key-current-layout 'dvorak)
 
 (defvar xah-fly--current-layout-kmap nil
   "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
 Value is automatically set from value of `xah-fly-key-current-layout'. Do not manually set this variable. Version 2019-02-12."
   )
-(setq xah-fly--current-layout-kmap
-      (symbol-value
-       (intern
-        (concat "xah--dvorak-to-"
-                (if (symbolp xah-fly-key-current-layout)
-                    (symbol-name xah-fly-key-current-layout)
-                  xah-fly-key-current-layout)
-                "-kmap"))))
+(setq xah-fly--current-layout-kmap nil)
 
 (defun xah-fly--key-char (Charstr)
   "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
