@@ -898,30 +898,6 @@ Version 2017-09-22 2021-08-27"
         (goto-char (point-max))
         (while (eq (char-before) ? ) (delete-char -1))))))
 
-;; HHH___________________________________________________________________
-
-(defun xah-search-current-word ()
-  "Call `isearch' on current word or selection.
-“word” here is A to Z, a to z, and hyphen [-] and lowline [_], independent of syntax table.
-
-URL `http://ergoemacs.org/emacs/modernization_isearch.html'
-Version 2015-04-09"
-  (interactive)
-  (let ($p1 $p2)
-    (if (region-active-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (save-excursion
-        (skip-chars-backward "-_A-Za-z0-9")
-        (setq $p1 (point))
-        (right-char)
-        (skip-chars-forward "-_A-Za-z0-9")
-        (setq $p2 (point))))
-    (setq mark-active nil)
-    (when (< $p1 (point))
-      (goto-char $p1))
-    (isearch-mode t)
-    (isearch-yank-string (buffer-substring-no-properties $p1 $p2))))
-
 (declare-function w32-shell-execute "w32fns.c" (operation document &optional parameters show-flag)) ; (w32-shell-execute "open" default-directory)
 
 ;; HHH___________________________________________________________________
@@ -1246,7 +1222,6 @@ minor modes loaded later may override bindings in this map.")
    ("c" . xah-fly-c-keymap)
    ("d" . beginning-of-buffer)
    ("e" . xah-fly-e-keymap)
-   ("f" . xah-search-current-word)
    ("h" . xah-fly-h-keymap)
    ("i" . kill-line)
    ("l" . recenter-top-bottom)
