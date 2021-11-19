@@ -901,17 +901,7 @@ Version 2017-09-22 2021-08-27"
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
-(defvar xah--dvorak-to-dvorak-kmap
-  '()
-  "A alist, dvorak to dvorak.")
-
 (setq xah-fly-key-current-layout 'dvorak)
-
-(defvar xah-fly--current-layout-kmap nil
-  "The current keyboard layout key map. Value is a alist. e.g. the value of `xah--dvorak-to-qwerty-kmap'.
-Value is automatically set from value of `xah-fly-key-current-layout'. Do not manually set this variable. Version 2019-02-12."
-  )
-(setq xah-fly--current-layout-kmap nil)
 
 (defun xah-fly--key-char (Charstr)
   "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
@@ -920,7 +910,7 @@ Version 2020-04-18"
   (interactive)
   (if (> (length Charstr) 1)
       Charstr
-    (let (($result (assoc Charstr xah-fly--current-layout-kmap)))
+    (let (($result (assoc Charstr nil)))
       (if $result (cdr $result) Charstr ))))
 
 (defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional DirectQ)
