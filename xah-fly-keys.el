@@ -938,14 +938,7 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-e-keymap)
  '(
-   ("RET" . insert-char)
-
-   ("c" . xah-insert-ascii-single-quote)
-   ("f" . xah-insert-emacs-quote)
-   ("g" . xah-insert-ascii-double-quote)
-   ("h" . xah-insert-brace)
-   ("n" . xah-insert-square-bracket)
-   ("t" . xah-insert-paren)))
+   ()))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
