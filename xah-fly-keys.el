@@ -12,93 +12,6 @@
 
 ;; This file is not part of GNU Emacs.
 
-;;; Commentary:
-
-;; xah-fly-keys is a efficient keybinding for emacs. (more efficient than vim)
-
-;; It is a modal mode like vi, but key choices are based on statistics of command call frequency.
-
-;; --------------------------------------------------
-;; MANUAL INSTALL
-
-;; put the file xah-fly-keys.el in ~/.emacs.d/lisp/
-;; create the dir if doesn't exist.
-
-;; put the following in your emacs init file:
-
-;; (add-to-list 'load-path "~/.emacs.d/lisp/")
-;; (require 'xah-fly-keys)
-
-;; possible layout values:
-
-;; dvorak
-
-;; (xah-fly-keys 1)
-
-;; --------------------------------------------------
-;; HOW TO USE
-
-;; M-x xah-fly-keys to toggle the mode on/off.
-
-;; Important command/insert mode switch keys:
-
-;; xah-fly-command-mode-activate (press 【<home>】 or 【F8】 or 【Alt+Space】 or 【menu】)
-
-;; xah-fly-insert-mode-activate  (when in command mode, press qwerty letter key f. (Dvorak key u))
-
-;; When in command mode:
-;; 【f】 (or Dvorak 【u】) activates insertion mode.
-;; 【Space】 is a leader key. For example, 【SPACE r】 (Dvorak 【SPACE p】) calls query-replace. Press 【SPACE C-h】 to see the full list.
-;; 【Space Space】 also activates insertion mode.
-;; 【Space Enter】 calls execute-extended-command or alternative.
-;; 【a】 calls execute-extended-command or alternative.
-
-;; The leader key sequence basically replace ALL emacs commands that starts with C-x key.
-
-;; When using xah-fly-keys, you don't need to press Control or Meta, with the following exceptions:
-
-;; C-c for major mode commands.
-;; C-g for cancel.
-;; C-q for quoted-insert.
-;; C-h for getting a list of keys following a prefix/leader key.
-
-;; Leader key
-
-;; You NEVER need to press Ctrl+x
-
-;; Any emacs command that has a keybinding starting with C-x, has also a key sequence binding in xah-fly-keys. For example,
-;; 【C-x b】 switch-to-buffer is 【SPACE f】 (Dvorak 【SPACE u】)
-;; 【C-x C-f】 find-file is 【SPACE i e】 (Dvorak 【SPACE c .】)
-;; 【C-x n n】 narrow-to-region is 【SPACE l l】 (Dvorak 【SPACE n n】)
-;; The first key we call it leader key. In the above examples, the SPACE is the leader key.
-
-;; When in command mode, the 【SPACE】 is a leader key.
-
-;; the following standard keys with Control are supported:
-
- ;; 【Ctrl+tab】 'xah-next-user-buffer
- ;; 【Ctrl+shift+tab】 'xah-previous-user-buffer
- ;; 【Ctrl+v】 paste
- ;; 【Ctrl+w】 close
- ;; 【Ctrl+z】 undo
- ;; 【Ctrl+n】 new
- ;; 【Ctrl+o】 open
- ;; 【Ctrl+s】 save
- ;; 【Ctrl+shift+s】 save as
- ;; 【Ctrl+shift+t】 open last closed
- ;; 【Ctrl++】 'text-scale-increase
- ;; 【Ctrl+-】 'text-scale-decrease
-
-;; I highly recommend setting 【capslock】 to send 【Home】. So that it acts as `xah-fly-command-mode-activate'.
-;; see
-;; How to Make the CapsLock Key do Home Key
-;; http://ergoemacs.org/misc/capslock_do_home_key.html
-
-;; If you have a bug, post on github.
-
-;; For detail about design and other info, see home page at
-;; http://ergoemacs.org/misc/ergoemacs_vi_mode.html
-
 ;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;; HHH___________________________________________________________________
@@ -132,15 +45,6 @@ Version 2021-08-12"
 
 ;; HHH___________________________________________________________________
 ;; cursor movement
-
-(defun xah-pop-local-mark-ring ()
-  "Move cursor to last mark position of current buffer.
-Call this repeatedly will cycle all positions in `mark-ring'.
-
-URL `http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html'
-Version 2016-04-04"
-  (interactive)
-  (set-mark-command t))
 
 (defun xah-beginning-of-line-or-block ()
   "Move cursor to beginning of line or previous block.
@@ -552,23 +456,6 @@ Version 2021-07-05 2021-08-13"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-long-p (not $isLong)))))
 
-(defun xah-delete-current-text-block ()
-  "Delete the current text block plus blank lines, or selection, and copy to `kill-ring'.
-
-URL `http://ergoemacs.org/emacs/emacs_delete_block.html'
-Version 2017-07-09 2021-08-14"
-  (interactive)
-  (let ($p1 $p2)
-    (if (region-active-p)
-        (setq $p1 (region-beginning) $p2 (region-end))
-      (progn
-        (if (re-search-backward "\n[ \t]*\n+" nil 1)
-            (setq $p1 (goto-char (match-end 0)))
-          (setq $p1 (point)))
-        (re-search-forward "\n[ \t]*\n+" nil 1)
-        (setq $p2 (point))))
-    (kill-region $p1 $p2)))
-
 ;; HHH___________________________________________________________________
 ;; insertion commands
 
@@ -659,22 +546,6 @@ Version 2017-01-17 2021-08-12"
 
 ;; HHH___________________________________________________________________
 ;; text selection
-
-(defun xah-select-block ()
-  "Select the current/next block plus 1 blankline.
-If region is active, extend selection downward by block.
-
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
-Version 2019-12-26 2021-04-04 2021-08-13"
-  (interactive)
-  (if (region-active-p)
-      (re-search-forward "\n[ \t]*\n[ \t]*\n*" nil 1)
-    (progn
-      (skip-chars-forward " \n\t")
-      (when (re-search-backward "\n[ \t]*\n" nil 1)
-        (goto-char (match-end 0)))
-      (push-mark (point) t t)
-      (re-search-forward "\n[ \t]*\n" nil 1))))
 
 (defun xah-select-line ()
   "Select current line. If region is active, extend selection downward by line.
@@ -1013,8 +884,6 @@ minor modes loaded later may override bindings in this map.")
    ("2" . xah-select-line)
    ("3" . delete-other-windows)
    ("4" . split-window-below)
-   ("6" . xah-select-block)
-   ("0" . xah-pop-local-mark-ring)
 
    ("a" . xah-fly-M-x)
    ("b" . isearch-forward)
@@ -1024,7 +893,6 @@ minor modes loaded later may override bindings in this map.")
    ("f" . undo)
    ("g" . backward-word)
    ("h" . backward-char)
-   ("i" . xah-delete-current-text-block)
    ("j" . xah-copy-line-or-region)
    ("k" . xah-paste-or-paste-previous)
    ("m" . backward-list)
