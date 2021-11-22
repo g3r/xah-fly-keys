@@ -850,7 +850,7 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-e-keymap)
  '(
-   ()))
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-h-keymap)
