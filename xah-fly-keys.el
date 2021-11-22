@@ -682,6 +682,18 @@ Version 2017-09-22 2021-08-27"
         (while (eq (char-before) ? ) (delete-char -1))))))
 
 ;; HHH___________________________________________________________________
+;; G3R functions
+
+(defun g3r-toggle-maximize-buffer ()
+  "Toggles fullscreen/zoom for currently selected buffer"
+  (interactive)
+  (if (= 1 (length (window-list)))
+      (jump-to-register '_)
+    (progn
+      (window-configuration-to-register '_)
+      (delete-other-windows))))
+
+;; HHH___________________________________________________________________
 ;; key maps for conversion
 
 (setq xah-fly-key-current-layout 'dvorak)
@@ -883,6 +895,7 @@ minor modes loaded later may override bindings in this map.")
    ("2"   . global-hl-line-mode)
    ("4"   . global-display-line-numbers-mode)
    ("e"   . eshell)
+   ("f"   . g3r-toggle-maximize-buffer)
    ("o"   . variable-pitch-mode)
    ("u"   . shell)
    ("v"   . visual-line-mode)
