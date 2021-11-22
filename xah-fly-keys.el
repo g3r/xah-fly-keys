@@ -925,29 +925,6 @@ minor modes loaded later may override bindings in this map.")
  '(
    ))
 
-(xah-fly--define-keys
- (define-prefix-command 'xah-fly--tab-key-map)
- ;; This keymap I've not used. things are here experimentally.
- ;; The TAB key is not in a very good ergonomic position on average keyboards, so 【leader tab ‹somekey›】 probably should not be used much.
- ;; Currently (2018-03-13), these are commands related to completion or indent, and I basically never use any of these (except sometimes complete-symbol).
- ;; For average user, the way it is now is probably justified, because most emacs users don't use these commands.
- ;; To customize this keymap see http://ergoemacs.org/misc/xah-fly-keys_customization.html.
- '(
-   ("g" . indent-rigidly)
-   ("r" . indent-region)
-   ("s" . indent-sexp)
-
-   ("1" . abbrev-prefix-mark)
-   ("2" . edit-abbrevs)
-   ("3" . expand-abbrev)
-   ("4" . expand-region-abbrevs)
-   ("5" . unexpand-abbrev)
-   ("6" . add-global-abbrev)
-   ("7" . add-mode-abbrev)
-   ("8" . inverse-add-global-abbrev)
-   ("9" . inverse-add-mode-abbrev)
-   ))
-
 ;; HHH___________________________________________________________________
 
 (xah-fly--define-keys
