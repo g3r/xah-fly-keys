@@ -44,52 +44,6 @@ Version 2021-08-12"
     (xah-get-bounds-of-block)))
 
 ;; HHH___________________________________________________________________
-;; cursor movement
-
-(defun xah-beginning-of-line-or-block ()
-  "Move cursor to beginning of line or previous block.
-
-• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
-• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
-• if `visual-line-mode' is on, beginning of line means visual line.
-
-URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04 2021-03-16"
-  (interactive)
-  (let (($p (point)))
-    (if (or (equal (point) (line-beginning-position))
-            (eq last-command this-command))
-        (if (re-search-backward "\n[\t\n ]*\n+" nil 1)
-            (progn
-              (skip-chars-backward "\n\t ")
-              ;; (forward-char )
-              )
-          (goto-char (point-min)))
-      (if visual-line-mode
-          (beginning-of-visual-line)
-        (progn
-          (back-to-indentation)
-          (when (eq $p (point))
-            (beginning-of-line)))))))
-
-(defun xah-end-of-line-or-block ()
-  "Move cursor to end of line or next block.
-
-• When called first time, move cursor to end of line.
-• When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
-• if `visual-line-mode' is on, end of line means visual line.
-
-URL `http://ergoemacs.org/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
-Version 2018-06-04 2021-03-16"
-  (interactive)
-  (if (or (equal (point) (line-end-position))
-          (eq last-command this-command))
-      (re-search-forward "\n[\t\n ]*\n+" nil 1 )
-    (if visual-line-mode
-        (end-of-visual-line)
-      (end-of-line))))
-
-;; HHH___________________________________________________________________
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -193,102 +147,6 @@ Version 2017-07-25 2020-09-08"
       (if (eq real-last-command this-command)
           (yank-pop 1)
         (yank)))))
-
-(defun xah-delete-backward-char-or-bracket-text ()
-  "Delete backward 1 character or delete quote/bracket pair and inner text.
-If the char to the left of cursor is a matching pair, delete it and inner text, push the deleted text to `kill-ring'.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-If `universal-argument' is called first, do not delete inner text.
-
-URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
-  (interactive)
-  (if (and delete-selection-mode (region-active-p))
-      (delete-region (region-beginning) (region-end))
-    (cond
-     ((looking-back "\\s)" 1)
-      (if current-prefix-arg
-          (xah-delete-backward-bracket-pair)
-        (xah-delete-backward-bracket-text)))
-     ((looking-back "\\s(" 1)
-      (progn
-        (backward-char)
-        (forward-sexp)
-        (if current-prefix-arg
-            (xah-delete-backward-bracket-pair)
-          (xah-delete-backward-bracket-text))))
-     ((looking-back "\\s\"" 1)
-      (if (nth 3 (syntax-ppss))
-          (progn
-            (backward-char)
-            (xah-delete-forward-bracket-pairs (not current-prefix-arg)))
-        (if current-prefix-arg
-            (xah-delete-backward-bracket-pair)
-          (xah-delete-backward-bracket-text))))
-     (t
-      (delete-char -1)))))
-
-(defun xah-delete-backward-bracket-text ()
-  "Delete the matching brackets/quotes to the left of cursor, including the inner text.
-
-This command assumes the left of cursor is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-09-21"
-  (interactive)
-  (progn
-    (forward-sexp -1)
-    (mark-sexp)
-    (kill-region (region-beginning) (region-end))))
-
-(defun xah-delete-backward-bracket-pair ()
-  "Delete the matching brackets/quotes to the left of cursor.
-After call, mark is set at the matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-This command assumes the left of point is a right bracket, and there is a matching one before it.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
-  (interactive)
-  (let (( $p0 (point)) $p1)
-    (forward-sexp -1)
-    (setq $p1 (point))
-    (goto-char $p0)
-    (delete-char -1)
-    (goto-char $p1)
-    (delete-char 1)
-    (push-mark (point) t)
-    (goto-char (- $p0 2))))
-
-(defun xah-delete-forward-bracket-pairs ( &optional DeleteInnerTextQ)
-  "Delete the matching brackets/quotes to the right of cursor.
-If DeleteInnerTextQ is true, also delete the inner text.
-
-After the command, mark is set at the left matching bracket position, so you can `exchange-point-and-mark' to select it.
-
-This command assumes the char to the right of point is a left bracket or quote, and have a matching one after.
-
-What char is considered bracket or quote is determined by current syntax table.
-
-URL `http://ergoemacs.org/emacs/emacs_delete_backward_char_or_bracket_text.html'
-Version 2017-07-02"
-  (interactive)
-  (if DeleteInnerTextQ
-      (progn
-        (mark-sexp)
-        (kill-region (region-beginning) (region-end)))
-    (let (($pt (point)))
-      (forward-sexp)
-      (delete-char -1)
-      (push-mark (point) t)
-      (goto-char $pt)
-      (delete-char 1))))
 
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
@@ -812,20 +670,22 @@ minor modes loaded later may override bindings in this map.")
    ("a" . xah-fly-M-x)
    ("b" . isearch-forward)
    ("c" . previous-line)
-   ("d" . xah-beginning-of-line-or-block)
-   ("e" . xah-delete-backward-char-or-bracket-text)
+   ("d" . back-to-indentation)
+   ("e" . delete-backward-char)
    ("f" . undo)
    ("g" . backward-word)
    ("h" . backward-char)
+   ("i" . delete-forward-char)
    ("j" . xah-copy-line-or-region)
    ("k" . xah-paste-or-paste-previous)
+   ("l" . recenter-top-bottom)
    ("m" . backward-list)
    ("n" . forward-char)
    ("o" . open-line)
    ("p" . kill-word)
    ("q" . xah-cut-line-or-region)
    ("r" . forward-word)
-   ("s" . xah-end-of-line-or-block)
+   ("s" . end-of-line)
    ("t" . next-line)
    ("u" . xah-fly-insert-mode-activate)
    ("v" . forward-list)
