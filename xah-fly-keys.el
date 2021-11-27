@@ -554,8 +554,6 @@ Version 2017-09-22 2021-08-27"
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
-(setq xah-fly-key-current-layout 'dvorak)
-
 (defun xah-fly--key-char (Charstr)
   "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
 Charstr must be a string of single char. If more than 1 char, return it unchanged.
@@ -870,10 +868,10 @@ Version 2021-05-19 2021-09-17"
   (interactive
    (list
     (widget-prompt-value
-     (get 'xah-fly-key-current-layout 'custom-type)
+     nil
      "New keyboard layout: ")))
-  (funcall (get 'xah-fly-key-current-layout 'custom-set)
-           'xah-fly-key-current-layout
+  (funcall nil
+           nil
            Layout))
 
 (defun xah-fly-command-mode-init ()
