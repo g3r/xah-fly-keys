@@ -3,16 +3,16 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.2.20211107171144
+;; Version: 16.4.20211121102321
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
-;; License: GPL v3
-;; Homepage: http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+;; License: GPL v2. Tell your friends to buy a copy.
+;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
 
 ;; This file is not part of GNU Emacs.
 
-;; If you like this project, Buy Xah Emacs Tutorial http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
+;; If you like this project, Buy Xah Emacs Tutorial http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
 ;; HHH___________________________________________________________________
 
@@ -51,7 +51,7 @@ Version 2021-08-12"
 When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version 2019-10-30"
   (interactive)
   (let ((inhibit-field-text-motion nil))
@@ -87,7 +87,7 @@ Version 2019-10-30"
   "Cut current line or selection.
 When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version 2015-06-10"
   (interactive)
   (if current-prefix-arg
@@ -102,7 +102,7 @@ Version 2015-06-10"
   "Copy buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
 
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
   (if (region-active-p)
@@ -117,7 +117,7 @@ Version 2015-08-22"
   "Cut buffer or selection content to `kill-ring'.
 Respects `narrow-to-region'.
 
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
 Version 2015-08-22"
   (interactive)
   (if (region-active-p)
@@ -134,7 +134,7 @@ This command calls `yank', and if repeated, call `yank-pop'.
 
 When `universal-argument' is called first with a number arg, paste that many times.
 
-URL `http://ergoemacs.org/emacs/emacs_paste_or_paste_previous.html'
+URL `http://xahlee.info/emacs/emacs/emacs_paste_or_paste_previous.html'
 Version 2017-07-25 2020-09-08"
   (interactive)
   (progn
@@ -151,7 +151,7 @@ Version 2017-07-25 2020-09-08"
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
 
-URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version 2018-04-02"
   (interactive)
   (let ($p3 $p4)
@@ -180,7 +180,7 @@ If cursor neighbor has space/tab, toggle between 1 or 0 space.
 If cursor neighbor are newline, shrink them to just 1.
 If already has just 1 whitespace, delete it.
 
-URL `http://ergoemacs.org/emacs/emacs_shrink_whitespace.html'
+URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version 2019-06-13"
   (interactive)
   (let* (
@@ -236,7 +236,7 @@ Version 2019-06-13"
 First call will break into multiple short lines. Repeated call toggles between short and long lines.
 This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
 
-URL `http://ergoemacs.org/emacs/modernization_fill-paragraph.html'
+URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
 Version 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
@@ -253,7 +253,7 @@ Version 2020-11-22 2021-08-13"
 (defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
 
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Version 2017-01-11"
   (interactive "r")
   (save-excursion
@@ -276,7 +276,7 @@ Version 2017-01-11"
   "Replace spaces by a newline at ~70 chars, on current block or selection.
 If `universal-argument' is called first, ask user for max width.
 
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Version 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
   (let ( $p1 $p2 $minlen )
@@ -297,7 +297,7 @@ Version 2018-12-16 2021-07-06 2021-08-12"
 When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
 If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
-URL `http://ergoemacs.org/emacs/emacs_reformat_lines.html'
+URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
 Version 2021-07-05 2021-08-13"
   (interactive)
@@ -321,7 +321,7 @@ Version 2021-07-05 2021-08-13"
   "Select current line. If region is active, extend selection downward by line.
 If `visual-line-mode' is on, consider line as visual line.
 
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
 Version 2017-11-01 2021-03-19"
   (interactive)
   (if (region-active-p)
@@ -351,7 +351,7 @@ when there is no selection,
 
 when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
 
-URL `http://ergoemacs.org/emacs/modernization_mark-word.html'
+URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
 Version 2020-02-04"
   (interactive)
   (if (region-active-p)
@@ -465,7 +465,7 @@ Version 2016-06-18"
   "Switch to the next user buffer.
 “user buffer” is determined by `xah-user-buffer-p'.
 
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
   (next-buffer)
@@ -480,7 +480,7 @@ Version 2016-06-19"
   "Switch to the previous user buffer.
 “user buffer” is determined by `xah-user-buffer-p'.
 
-URL `http://ergoemacs.org/emacs/elisp_next_prev_user_buffer.html'
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
 Version 2016-06-19"
   (interactive)
   (previous-buffer)
@@ -522,7 +522,7 @@ Version 2020-04-09 2021-02-24"
 Only space and tab is considered whitespace here.
 Works on whole buffer or selection, respects `narrow-to-region'.
 
-URL `http://ergoemacs.org/emacs/elisp_compact_empty_lines.html'
+URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
 Version 2017-09-22 2021-08-27"
   (interactive)
   (let ($begin $end)
@@ -911,7 +911,7 @@ Version 2017-07-07"
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
 
-URL `http://ergoemacs.org/misc/ergoemacs_vi_mode.html'"
+URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   :group 'xah-fly-keys
   :global t
   :lighter " XFK"
