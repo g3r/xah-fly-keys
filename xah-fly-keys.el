@@ -855,25 +855,6 @@ minor modes loaded later may override bindings in this map.")
                             xah-fly-insert-map
                           xah-fly-command-map)))
 
-(defun xah-fly-keys-set-layout (Layout)
-  "Set a keyboard layout.
-Argument must be one of:
-
- dvorak
- qwerty
-
-In elisp, those should be strings.
-
-Version 2021-05-19 2021-09-17"
-  (interactive
-   (list
-    (widget-prompt-value
-     nil
-     "New keyboard layout: ")))
-  (funcall nil
-           nil
-           Layout))
-
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
 Version 2020-04-28"
