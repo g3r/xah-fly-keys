@@ -37,7 +37,8 @@ Version 2021-08-12"
     (cons $p1 $p2 )))
 
 (defun xah-get-bounds-of-block-or-region ()
-  "If region is active, return its boundary, else same as `xah-get-bounds-of-block'.
+  "If region is active, return its boundary,
+else same as `xah-get-bounds-of-block'.
 Version 2021-08-12"
   (if (region-active-p)
       (cons (region-beginning) (region-end))
@@ -49,7 +50,8 @@ Version 2021-08-12"
 (defun xah-copy-line-or-region ()
   "Copy current line or selection.
 When called repeatedly, append copy subsequent lines.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+When `universal-argument' is called first, copy whole buffer
+(respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version 2019-10-30"
@@ -85,7 +87,8 @@ Version 2019-10-30"
 
 (defun xah-cut-line-or-region ()
   "Cut current line or selection.
-When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
+When `universal-argument' is called first, cut whole buffer
+ (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
 Version 2015-06-10"
@@ -132,7 +135,8 @@ Version 2015-08-22"
   "Paste. When called repeatedly, paste previous.
 This command calls `yank', and if repeated, call `yank-pop'.
 
-When `universal-argument' is called first with a number arg, paste that many times.
+When `universal-argument' is called first with a number arg,
+paste that many times.
 
 URL `http://xahlee.info/emacs/emacs/emacs_paste_or_paste_previous.html'
 Version 2017-07-25 2020-09-08"
@@ -233,8 +237,10 @@ Version 2019-06-13"
 
 (defun xah-fill-or-unfill ()
   "Reformat current block or selection to short/long line.
-First call will break into multiple short lines. Repeated call toggles between short and long lines.
-This commands calls `fill-region' to do its work. Set `fill-column' for short line length.
+First call will break into multiple short lines. Repeated call
+toggles between short and long lines.
+This commands calls `fill-region' to do its work.
+Set `fill-column' for short line length.
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
 Version 2020-11-22 2021-08-13"
@@ -294,8 +300,10 @@ Version 2018-12-16 2021-07-06 2021-08-12"
 
 (defun xah-reformat-lines ( &optional Width)
   "Reformat current block or selection into short lines or 1 long line.
-When called for the first time, change to one long line. Second call change it to multiple short lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
+When called for the first time, change to one long line.
+Second call change it to multiple short lines. Repeated call toggles.
+If `universal-argument' is called first, ask user to type max length
+of line. By default, it is 70.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
@@ -346,10 +354,13 @@ Version 2017-11-01 2021-03-19"
 Subsequent calls expands the selection.
 
 when there is no selection,
-• if cursor is on a any type of bracket (including parenthesis, quotation mark), select whole bracketed thing including bracket
+• if cursor is on a any type of bracket (including parenthesis,
+quotation mark), select whole bracketed thing including bracket
 • else, select current word.
 
-when there is a selection, the selection extension behavior is still experimental. But when cursor is on a any type of bracket (parenthesis, quote), it extends selection to outer bracket.
+when there is a selection, the selection extension behavior
+is still experimental. But when cursor is on a any type of
+bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
 Version 2020-02-04"
@@ -451,7 +462,8 @@ Version 2020-02-04"
 (defun xah-user-buffer-p ()
   "Return t if current buffer is a user buffer, else nil.
 Typically, if buffer name starts with *, it is not considered a user buffer.
-This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+This function is used by buffer switching command and close buffer
+command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
 Version 2016-06-18"
   (interactive)
@@ -495,13 +507,16 @@ Version 2016-06-19"
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
-(defvar xah-fly-M-x-command nil "Command to call for emacs `execute-extended-command' replacement, used by `xah-fly-M-x'. Value should be a lisp symbol.")
+(defvar xah-fly-M-x-command nil "Command to call for emacs
+`execute-extended-command' replacement, used by `xah-fly-M-x'.
+ Value should be a lisp symbol.")
 
 (setq xah-fly-M-x-command nil)
 
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
-If `xah-fly-M-x-command' is non-nil, call it, else call one of the following, in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
+If `xah-fly-M-x-command' is non-nil, call it, else call one of the following,
+in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
 Version 2020-04-09 2021-02-24"
   (interactive)
   (command-execute
@@ -555,8 +570,10 @@ Version 2017-09-22 2021-08-27"
 ;; key maps for conversion
 
 (defun xah-fly--key-char (Charstr)
-  "Return the corresponding char Charstr according to `xah-fly--current-layout-kmap'.
-Charstr must be a string of single char. If more than 1 char, return it unchanged.
+  "Return the corresponding char Charstr according to
+`xah-fly--current-layout-kmap'.
+Charstr must be a string of single char. If more than 1 char,
+return it unchanged.
 Version 2020-04-18"
   (interactive)
   (if (> (length Charstr) 1)
