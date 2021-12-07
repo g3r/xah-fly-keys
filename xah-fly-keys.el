@@ -315,33 +315,6 @@ Version 2021-07-05 2021-08-13"
           (xah-reformat-whitespaces-to-one-space $p1 $p2)))
       (put this-command 'is-long-p (not $isLong)))))
 
-(defun xah-reformat-to-sentence-lines ()
-  "Reformat current block or selection into multiple lines by ending period.
-HTML anchor links “<a…>…</a>” is also placed on a new line.
-After this command is called, press space to repeat it.
-
-URL `http://xahlee.info/emacs/emacs/elisp_reformat_to_sentence_lines.html'
-Version 2020-12-02 2021-08-31"
-  (interactive)
-  (let ($p1 $p2)
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (save-restriction
-      (narrow-to-region $p1 $p2)
-      (goto-char (point-min))
-      (while (search-forward "\n" nil t) (replace-match " " ))
-      (goto-char (point-min))
-      (while (re-search-forward "  +" nil t) (replace-match " " ))
-      (goto-char (point-min))
-      (while (re-search-forward "\\. +\\([(0-9A-Za-z]+\\)" nil t) (replace-match ".\n\\1" ))
-      (goto-char (point-min))
-      (while (search-forward "<a " nil t) (replace-match "\n<a " ))
-      (goto-char (point-min))
-      (while (re-search-forward "<br */> *" nil t) (replace-match "<br />\n" ))
-      (goto-char (point-max))
-      (while (eq (char-before ) 32) (delete-char -1))))
-  (re-search-forward "\n+" nil 1)
-  (set-transient-map (let (($kmap (make-sparse-keymap))) (define-key $kmap (kbd "SPC") 'xah-reformat-to-sentence-lines ) $kmap)))
-
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
