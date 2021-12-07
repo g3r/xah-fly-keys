@@ -795,6 +795,21 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
+ (define-prefix-command 'xah-fly-p-keymap)
+ '(
+   ("b" . project-switch-to-buffer)
+   ("c" . project-compile)
+   ("d" . project-find-dir)
+   ("D" . project-dired)
+   ("e" . project-eshell)
+   ("f" . project-find-file)
+   ("g" . project-find-regexp)
+   ("p" . project-switch-project)
+   ("s" . project-shell)
+   ("v" . project-vc-dir)
+   ))
+
+(xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-r-keymap)
  '(("SPC" . rectangle-mark-mode)
