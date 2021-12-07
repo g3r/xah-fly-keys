@@ -179,7 +179,8 @@ Version 2019-06-13"
 (defun xah-shrink-whitespaces ()
   "Remove whitespaces around cursor .
 
-Shrink neighboring spaces, then newlines, then spaces again, leaving one space or newline at each step, till no more white space.
+Shrink neighboring spaces, then newlines, then spaces again,
+leaving one space or newline at each step, till no more white space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version 2014-10-21 2021-11-26 2021-11-30"
@@ -1085,7 +1086,8 @@ Version 2017-07-07"
 ;; HHH___________________________________________________________________
 
 (define-minor-mode xah-fly-keys
-  "A modal keybinding set, like vim, but based on ergonomic principles, like Dvorak layout.
+  "A modal keybinding set, like vim, but based on ergonomic principles,
+ like Dvorak layout.
 
 URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   :group 'xah-fly-keys
