@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.6.20211130113540
+;; Version: 16.6.20211210141037
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -25,7 +25,7 @@
 
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
-Version 2021-08-12"
+Version: 2021-08-12"
   (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
     (save-excursion
       (setq $p1 (if (re-search-backward $blankRegex nil 1)
@@ -39,7 +39,7 @@ Version 2021-08-12"
 (defun xah-get-bounds-of-block-or-region ()
   "If region is active, return its boundary,
 else same as `xah-get-bounds-of-block'.
-Version 2021-08-12"
+Version: 2021-08-12"
   (if (region-active-p)
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
@@ -54,7 +54,7 @@ When `universal-argument' is called first, copy whole buffer
 (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version 2019-10-30"
+Version: 2019-10-30"
   (interactive)
   (let ((inhibit-field-text-motion nil))
     (if current-prefix-arg
@@ -91,7 +91,7 @@ When `universal-argument' is called first, cut whole buffer
  (respects `narrow-to-region').
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_current_line.html'
-Version 2015-06-10"
+Version: 2015-06-10"
   (interactive)
   (if current-prefix-arg
       (progn ; not using kill-region because we don't want to include previous kill
@@ -106,7 +106,7 @@ Version 2015-06-10"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
-Version 2015-08-22"
+Version: 2015-08-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -121,7 +121,7 @@ Version 2015-08-22"
 Respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/emacs_copy_cut_all_or_region.html'
-Version 2015-08-22"
+Version: 2015-08-22"
   (interactive)
   (if (region-active-p)
       (progn
@@ -139,7 +139,7 @@ When `universal-argument' is called first with a number arg,
 paste that many times.
 
 URL `http://xahlee.info/emacs/emacs/emacs_paste_or_paste_previous.html'
-Version 2017-07-25 2020-09-08"
+Version: 2017-07-25 2020-09-08"
   (interactive)
   (progn
     (when (and delete-selection-mode (region-active-p))
@@ -156,7 +156,7 @@ Version 2017-07-25 2020-09-08"
   "Delete all newline around cursor.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2018-04-02"
+Version: 2018-04-02"
   (interactive)
   (let ($p3 $p4)
           (skip-chars-backward "\n")
@@ -167,7 +167,7 @@ Version 2018-04-02"
 
 (defun xah-fly-delete-spaces ()
   "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
-Version 2019-06-13"
+Version: 2019-06-13"
   (interactive)
   (let (p1 p2)
     (skip-chars-forward " \t　")
@@ -183,7 +183,7 @@ Shrink neighboring spaces, then newlines, then spaces again,
 leaving one space or newline at each step, till no more white space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
-Version 2014-10-21 2021-11-26 2021-11-30"
+Version: 2014-10-21 2021-11-26 2021-11-30"
   (interactive)
   (let* (($eol-count 0)
          ($p0 (point))
@@ -236,7 +236,7 @@ This commands calls `fill-region' to do its work.
 Set `fill-column' for short line length.
 
 URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
-Version 2020-11-22 2021-08-13"
+Version: 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( ($isLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
@@ -253,7 +253,7 @@ Version 2020-11-22 2021-08-13"
   "Replace whitespaces by one space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version 2017-01-11"
+Version: 2017-01-11"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -276,7 +276,7 @@ Version 2017-01-11"
 If `universal-argument' is called first, ask user for max width.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version 2018-12-16 2021-07-06 2021-08-12"
+Version: 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
   (let ( $p1 $p2 $minlen )
     (setq $minlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
@@ -300,7 +300,7 @@ of line. By default, it is 70.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version 2021-07-05 2021-08-13"
+Version: 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ( $isLong $width $p1 $p2)
@@ -319,7 +319,7 @@ Version 2021-07-05 2021-08-13"
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
 URL `http://xahlee.info/emacs/emacs/emacs_toggle_comment_by_line.html'
-Version 2016-10-25"
+Version: 2016-10-25"
   (interactive)
   (if (region-active-p)
       (comment-dwim nil)
@@ -347,7 +347,7 @@ Version 2016-10-25"
 If `visual-line-mode' is on, consider line as visual line.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2017-11-01 2021-03-19"
+Version: 2017-11-01 2021-03-19"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
@@ -380,7 +380,7 @@ is still experimental. But when cursor is on a any type of
 bracket (parenthesis, quote), it extends selection to outer bracket.
 
 URL `http://xahlee.info/emacs/emacs/modernization_mark-word.html'
-Version 2020-02-04"
+Version: 2020-02-04"
   (interactive)
   (if (region-active-p)
       (progn
@@ -482,7 +482,7 @@ Typically, if buffer name starts with *, it is not considered a user buffer.
 This function is used by buffer switching command and close buffer
 command, so that next buffer shown is a user buffer.
 You can override this function to get your idea of “user buffer”.
-Version 2016-06-18"
+Version: 2016-06-18"
   (interactive)
   (cond
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
@@ -495,7 +495,7 @@ Version 2016-06-18"
 “user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (next-buffer)
   (let ((i 0))
@@ -510,7 +510,7 @@ Version 2016-06-19"
 “user buffer” is determined by `xah-user-buffer-p'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
-Version 2016-06-19"
+Version: 2016-06-19"
   (interactive)
   (previous-buffer)
   (let ((i 0))
@@ -532,9 +532,10 @@ Version 2016-06-19"
 
 (defun xah-fly-M-x ()
   "Calls `execute-extended-command' or an alternative.
-If `xah-fly-M-x-command' is non-nil, call it, else call one of the following,
-in order: `smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version 2020-04-09 2021-02-24"
+If `xah-fly-M-x-command' is non-nil, call it,
+else call one of the following, in order:
+`smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
+Version: 2020-04-09 2021-02-24"
   (interactive)
   (command-execute
    (cond
@@ -555,7 +556,7 @@ Only space and tab is considered whitespace here.
 Works on whole buffer or selection, respects `narrow-to-region'.
 
 URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
-Version 2017-09-22 2021-08-27"
+Version: 2017-09-22 2021-08-27"
   (interactive)
   (let ($begin $end)
     (if (region-active-p)
@@ -611,7 +612,7 @@ Example usage:
 ;;    (\".\" . isearch-forward-symbol-at-point)
 ;;    (\"1\" . hi-lock-find-patterns)
 ;;    (\"w\" . isearch-forward-word)))
-Version 2020-04-18"
+Version: 2020-04-18"
   (let (($keymapName (make-symbol "keymap-name")))
     `(let ((,$keymapName , KeymapName))
        ,@(mapcar
@@ -906,7 +907,7 @@ minor modes loaded later may override bindings in this map.")
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
-Version 2020-04-28"
+Version: 2020-04-28"
   (interactive)
   (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
@@ -937,20 +938,20 @@ Version 2020-04-28"
 
 (defun xah-fly-command-mode-activate ()
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
-Version 2017-07-07"
+Version: 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
 (defun xah-fly-command-mode-activate-no-hook ()
-  "Activate command mode without running `xah-fly-command-mode-activate-hook'
-Version 2017-07-07"
+  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
+Version: 2017-07-07"
   (interactive)
   (xah-fly-command-mode-init))
 
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
-Version 2017-07-07"
+Version: 2017-07-07"
   (interactive)
   (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
