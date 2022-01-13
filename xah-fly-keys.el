@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2021, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.6.20211210141037
+;; Version: 16.9.20220108144047
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -253,23 +253,17 @@ Version: 2020-11-22 2021-08-13"
   "Replace whitespaces by one space.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
-Version: 2017-01-11"
+Version: 2017-01-11 2022-01-08"
   (interactive "r")
-  (save-excursion
-    (save-restriction
+  (save-restriction
       (narrow-to-region Begin End)
       (goto-char (point-min))
-      (while
-          (search-forward "\n" nil 1)
-        (replace-match " "))
+      (while (search-forward "\n" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while
-          (search-forward "\t" nil 1)
-        (replace-match " "))
+      (while (search-forward "\t" nil 1) (replace-match " "))
       (goto-char (point-min))
-      (while
-          (re-search-forward "  +" nil 1)
-        (replace-match " ")))))
+      (while (re-search-forward " +" nil 1) (replace-match " "))
+      (goto-char (point-max))))
 
 (defun xah-reformat-to-multi-lines ( &optional Begin End MinLength)
   "Replace spaces by a newline at ~70 chars, on current block or selection.
@@ -291,7 +285,7 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
           (when (> (- (point) (line-beginning-position)) $minlen)
             (replace-match "\n" )))))))
 
-(defun xah-reformat-lines ( &optional Width)
+(defun xah-reformat-lines (&optional Width)
   "Reformat current block or selection into short lines or 1 long line.
 When called for the first time, change to one long line.
 Second call change it to multiple short lines. Repeated call toggles.
@@ -303,8 +297,8 @@ Created 2016 or before.
 Version: 2021-07-05 2021-08-13"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( $isLong $width $p1 $p2)
-    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70 )))
+  (let ($isLong $width $p1 $p2)
+    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
     (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
     (progn
@@ -312,7 +306,8 @@ Version: 2021-07-05 2021-08-13"
           (xah-reformat-to-multi-lines $p1 $p2 $width)
         (if $isLong
             (xah-reformat-to-multi-lines $p1 $p2 $width)
-          (xah-reformat-whitespaces-to-one-space $p1 $p2)))
+          (progn
+            (xah-reformat-whitespaces-to-one-space $p1 $p2))))
       (put this-command 'is-long-p (not $isLong)))))
 
 (defun xah-comment-dwim ()
