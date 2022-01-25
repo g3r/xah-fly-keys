@@ -1,9 +1,9 @@
 ;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
 
-;; Copyright © 2013-2021, by Xah Lee
+;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.9.20220108144047
+;; Version: 16.13.20220123180127
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -156,6 +156,24 @@ Version: 2017-07-25 2020-09-08"
       (if (eq real-last-command this-command)
           (yank-pop 1)
         (yank)))))
+
+(defun xah-add-space-after-comma ()
+  "Add a space after comma of current block or selection.
+and highlight changes made.
+Version 2022-01-20"
+  (interactive)
+  (let ($p1 $p2)
+    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+    (save-restriction
+      (narrow-to-region $p1 $p2)
+      (goto-char (point-min))
+      (while
+          (re-search-forward ",\\b" nil t)
+        (replace-match ", ")
+        (overlay-put
+         (make-overlay
+          (match-beginning 0)
+          (match-end 0)) 'face 'highlight)))))
 
 (defun xah-delete-blank-lines ()
   "Delete all newline around cursor.
@@ -833,7 +851,6 @@ minor modes loaded later may override bindings in this map.")
  '(
    ("SPC" . xah-clean-whitespace)
    ("." . sort-lines)
-
    ("d" . mark-defun)
    ("e" . list-matching-lines)
 ))
