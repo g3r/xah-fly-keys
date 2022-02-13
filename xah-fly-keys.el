@@ -3,7 +3,7 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.13.20220126112648
+;; Version: 16.13.20220213005539
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
@@ -646,9 +646,8 @@ Version: 2020-04-18"
 
 (defvar xah-fly-key-map (make-sparse-keymap)
   "Backward-compatibility map for `xah-fly-keys' minor mode.
+If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, point to points to `xah-fly-command-map'.")
 
-Points to `xah-fly-insert-map' when `xah-fly-insert-state-p' is non-nil,
-and points to `xah-fly-command-map' otherwise (which see).")
 (make-obsolete-variable
  'xah-fly-key-map
  "Put bindings for command mode in `xah-fly-command-map', bindings for
