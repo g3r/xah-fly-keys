@@ -1,4 +1,4 @@
-;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; -*-
+;;; xah-fly-keys.el --- ergonomic modal keybinding minor mode. -*- coding: utf-8; lexical-binding: t; byte-compile-docstring-max-column: 200; -*-
 
 ;; Copyright © 2013-2022 by Xah Lee
 
