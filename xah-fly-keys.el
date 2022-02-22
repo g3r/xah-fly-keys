@@ -28,6 +28,28 @@
 (defvar xah-fly-insert-mode-indicator " INSERT "
   "Character in mode line indicating insert mode is active.")
 
+(defface xfk-command-mode-indicator
+  '((default :foreground "gray90" :weight bold)
+    (((class color) (min-colors 88) (background light))
+     :background "firebrick4")
+    (((class color) (min-colors 88) (background dark))
+     :background "firebrick4")
+    (t :inherit highlight))
+  "xah-fly-keys command mode indicator face"
+  :group 'xah-fly-keys)
+
+
+(defface xfk-insert-mode-indicator
+  '((default :foreground "grey90" :weight bold)
+    (((class color) (min-colors 88) (background light))
+     :background "#105020")
+    (((class color) (min-colors 88) (background dark))
+     :background "#105020")
+    (t :inherit highlight))
+  "xah-fly-keys insert mode indicator face"
+  :group 'xah-fly-keys)
+
+
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
 Version: 2021-08-12"
@@ -931,7 +953,7 @@ Version: 2020-04-28"
         (set-transient-map xah-fly-command-map (lambda () t)))
   (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
   ;; (set-face-background 'cursor "firebrick1")
-  (setq mode-line-front-space (propertize xah-fly-command-mode-indicator 'face '(:weight bold :foreground "grey90" :background "firebrick4")))
+  (setq mode-line-front-space (propertize xah-fly-command-mode-indicator 'face 'xfk-command-mode-indicator))
   (force-mode-line-update))
 
 (defun xah-fly-insert-mode-init (&optional no-indication)
@@ -943,7 +965,7 @@ Version: 2020-04-28"
   (unless no-indication
     (modify-all-frames-parameters '((cursor-type . bar)))
     ;; (set-face-background 'cursor "chartreuse")
-    (setq mode-line-front-space (propertize xah-fly-insert-mode-indicator 'face '(:weight bold :foreground "grey90" :background "#105020"))))
+    (setq mode-line-front-space (propertize xah-fly-insert-mode-indicator 'face 'xfk-insert-mode-indicator)))
   (force-mode-line-update))
 
 (defun xah-fly-save-buffer-if-file ()
