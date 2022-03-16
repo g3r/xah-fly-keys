@@ -3,11 +3,11 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
-;; Version: 16.14.20220304152948
+;; Version: 16.15.20220314145449
 ;; Created: 10 Sep 2013
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
-;; License: GPL v2. Tell your friends to buy a copy.
+;; License: GPL v3. Tell your friends to buy a copy.
 ;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
 
 ;; This file is not part of GNU Emacs.
@@ -331,29 +331,26 @@ Version: 2018-12-16 2021-07-06 2021-08-12"
             (replace-match "\n" )))))))
 
 (defun xah-reformat-lines (&optional Width)
-  "Reformat current block or selection into short lines or 1 long line.
-When called for the first time, change to one long line.
-Second call change it to multiple short lines. Repeated call toggles.
-If `universal-argument' is called first, ask user to type max length
-of line. By default, it is 70.
+  "Reformat current block or selection into 1 long line or short lines.
+When called for the first time, change to one long line. Second call change it to short lines. Repeated call toggles.
+If `universal-argument' is called first, ask user to type max length of line. By default, it is 70.
 
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Created 2016 or before.
-Version: 2021-07-05 2021-08-13"
+Version: 2021-07-05 2021-08-13 2022-03-12"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
   (let ($isLong $width $p1 $p2)
     (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
     (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
     (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (progn
-      (if current-prefix-arg
+    (if current-prefix-arg
+        (xah-reformat-to-multi-lines $p1 $p2 $width)
+      (if $isLong
           (xah-reformat-to-multi-lines $p1 $p2 $width)
-        (if $isLong
-            (xah-reformat-to-multi-lines $p1 $p2 $width)
-          (progn
-            (xah-reformat-whitespaces-to-one-space $p1 $p2))))
-      (put this-command 'is-long-p (not $isLong)))))
+        (progn
+          (xah-reformat-whitespaces-to-one-space $p1 $p2))))
+    (put this-command 'is-long-p (not $isLong))))
 
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
@@ -569,26 +566,6 @@ Version: 2016-06-19"
  Value should be a lisp symbol.")
 
 (setq xah-fly-M-x-command nil)
-
-(defun xah-fly-M-x ()
-  "Calls `execute-extended-command' or an alternative.
-If `xah-fly-M-x-command' is non-nil, call it,
-else call one of the following, in order:
-`smex', `helm-M-x', `counsel-M-x', `execute-extended-command'.
-Version: 2020-04-09 2021-02-24"
-  (interactive)
-  (command-execute
-   (cond
-    ((and (boundp 'xah-fly-M-x-command) xah-fly-M-x-command) xah-fly-M-x-command )
-    ((fboundp 'smex) 'smex)
-    ((fboundp 'helm-M-x) 'helm-M-x)
-    ((fboundp 'counsel-M-x) 'counsel-M-x)
-    (t 'execute-extended-command))
-   nil
-   nil
-   :special))
-
-;; HHH___________________________________________________________________
 
 (defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
