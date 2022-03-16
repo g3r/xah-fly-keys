@@ -561,12 +561,6 @@ Version: 2016-06-19"
     (defalias 'xah-display-line-numbers-mode #'linum-mode)
   (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
 
-(defvar xah-fly-M-x-command nil "Command to call for emacs
-`execute-extended-command' replacement, used by `xah-fly-M-x'.
- Value should be a lisp symbol.")
-
-(setq xah-fly-M-x-command nil)
-
 (defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
@@ -716,7 +710,7 @@ minor modes loaded later may override bindings in this map.")
    ("3" . delete-other-windows)
    ("4" . split-window-below)
 
-   ("a" . xah-fly-M-x)
+   ("a" . execute-extended-command)
    ("b" . isearch-forward)
    ("B" . query-replace)
    ("c" . previous-line)
