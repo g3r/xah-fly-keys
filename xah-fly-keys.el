@@ -525,6 +525,7 @@ Version: 2016-06-18"
    ((string-equal "*" (substring (buffer-name) 0 1)) nil)
    ((string-equal major-mode "dired-mode") nil)
    ((string-equal major-mode "eww-mode") nil)
+   ((string-equal major-mode "help-mode") nil)
    (t t)))
 
 (defun xah-next-user-buffer ()
