@@ -615,15 +615,6 @@ Version 2020-04-18"
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
 The key is remapped from Dvorak to the current keyboard layout
 by `xah-fly--key-char'.
-If DirectQ is t, do not remap key to current keyboard layout.
-Example usage:
-;; (xah-fly--define-keys
-;;  (define-prefix-command 'xah-fly-dot-keymap)
-;;  '(
-;;    (\"h\" . highlight-symbol-at-point)
-;;    (\".\" . isearch-forward-symbol-at-point)
-;;    (\"1\" . hi-lock-find-patterns)
-;;    (\"w\" . isearch-forward-word)))
 Version: 2020-04-18"
   (let (($keymapName (make-symbol "keymap-name")))
     `(let ((,$keymapName , KeymapName))
