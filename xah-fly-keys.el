@@ -914,8 +914,8 @@ Version: 2020-04-28"
   (xah-fly--update-key-map)
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
-  (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
-  ;; (set-face-background 'cursor "firebrick1")
+  ;; (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
+  (set-face-background 'cursor "firebrick1")
   (setq mode-line-front-space (propertize xah-fly-command-mode-indicator 'face 'xfk-command-mode-indicator))
   (force-mode-line-update))
 
@@ -926,8 +926,8 @@ Version: 2020-04-28"
   (xah-fly--update-key-map)
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
-    (modify-all-frames-parameters '((cursor-type . bar)))
-    ;; (set-face-background 'cursor "chartreuse")
+    ;; (modify-all-frames-parameters '((cursor-type . bar)))
+    (set-face-background 'cursor "yellow green")
     (setq mode-line-front-space (propertize xah-fly-insert-mode-indicator 'face 'xfk-insert-mode-indicator)))
   (force-mode-line-update))
 
