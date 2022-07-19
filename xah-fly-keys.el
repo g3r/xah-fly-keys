@@ -860,7 +860,8 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
-   ("SPC" . xah-fly-insert-mode-activate)
+   ;; ("SPC" . xah-fly-insert-mode-activate)
+   ("SPC" . project-find-file)
    ("TAB" . xah-fly--tab-key-map)
    ;; ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
