@@ -909,10 +909,12 @@ minor modes loaded later may override bindings in this map.")
 
 (defun xah-fly-command-mode-init ()
   "Set command mode keys.
-Version: 2020-04-28"
+Version: 2022-07-06"
   (interactive)
   (setq xah-fly-insert-state-p nil)
   (xah-fly--update-key-map)
+  (when xah-fly--deactivate-command-mode-func
+    (funcall xah-fly--deactivate-command-mode-func))
   (setq xah-fly--deactivate-command-mode-func
         (set-transient-map xah-fly-command-map (lambda () t)))
   ;; (modify-all-frames-parameters (list (cons 'cursor-type 'box)))
