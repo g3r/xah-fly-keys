@@ -862,7 +862,6 @@ minor modes loaded later may override bindings in this map.")
  '(
    ;; ("SPC" . xah-fly-insert-mode-activate)
    ("SPC" . project-find-file)
-   ("TAB" . xah-fly--tab-key-map)
    ;; ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xah-fly-comma-keymap)
