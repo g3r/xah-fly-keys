@@ -991,7 +991,7 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
       ;; (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
       (xah-fly-insert-mode-init :no-indication)
-      (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
+      (setq mode-line-front-space "")
 
       ;;
       )))
