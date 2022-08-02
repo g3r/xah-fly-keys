@@ -27,6 +27,8 @@
   "Character in mode line indicating command mode is active.")
 (defvar xah-fly-insert-mode-indicator " INSERT "
   "Character in mode line indicating insert mode is active.")
+(defvar xah-fly-emacs-mode-indicator " EMACS "
+  "Character in mode line indicating emacs mode is active.")
 
 (defface xfk-command-mode-indicator
   '((default :foreground "gray90" :weight bold)
@@ -47,6 +49,16 @@
      :background "#105020")
     (t :inherit highlight))
   "xah-fly-keys insert mode indicator face"
+  :group 'xah-fly-keys)
+
+(defface xfk-emacs-mode-indicator
+  '((default :foreground "grey90" :weight bold)
+    (((class color) (min-colors 88) (background light))
+     :background "maroon4")
+    (((class color) (min-colors 88) (background dark))
+     :background "maroon4")
+    (t :inherit highlight))
+  "xah-fly-keys emacs mode indicator face"
   :group 'xah-fly-keys)
 
 
@@ -991,8 +1003,7 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
       ;; (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
       (xah-fly-insert-mode-init :no-indication)
-      (setq mode-line-front-space "")
-
+      (setq mode-line-front-space (propertize xah-fly-emacs-mode-indicator 'face 'xfk-emacs-mode-indicator))
       ;;
       )))
 
