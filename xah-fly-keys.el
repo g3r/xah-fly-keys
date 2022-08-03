@@ -862,12 +862,12 @@ minor modes loaded later may override bindings in this map.")
    ("q" . save-buffers-kill-terminal)
 ))
 
-(xah-fly--define-keys
- ;; kinda replacement related
- (define-prefix-command 'xah-fly-comma-keymap)
- '(
-   ("t" . xref-find-definitions)
-   ("n" . xref-pop-marker-stack)))
+;; (xah-fly--define-keys
+;;  ;; kinda replacement related
+;;  (define-prefix-command 'xah-fly-comma-keymap)
+;;  '(
+;;    ("t" . xref-find-definitions)
+;;    ("n" . xref-pop-marker-stack)))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
@@ -876,8 +876,9 @@ minor modes loaded later may override bindings in this map.")
    ("SPC" . project-find-file)
    ;; ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
-   ("," . xah-fly-comma-keymap)
-
+   ("," . xref-go-back)
+   ("." . xref-find-definitions)
+   
    ("3" . delete-window)
    ("4" . split-window-right)
    ("5" . balance-windows)
