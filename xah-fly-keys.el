@@ -974,6 +974,7 @@ Version: 2017-07-07"
 
 ;; HHH___________________________________________________________________
 
+;;;###autoload
 (define-minor-mode xah-fly-keys
   "A modal keybinding set, like vim, but based on ergonomic principles,
  like Dvorak layout.
