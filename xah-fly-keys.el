@@ -30,6 +30,10 @@
 (defvar xah-fly-emacs-mode-indicator " EMACS "
   "Character in mode line indicating emacs mode is active.")
 
+
+(defvar xfk-inhibit-modes ()
+  "List of modes where xah-fly-keys is disabled.")
+
 (defface xfk-command-mode-indicator
   '((default :foreground "gray90" :weight bold)
     (((class color) (min-colors 88) (background light))
@@ -973,6 +977,11 @@ Version: 2017-07-07"
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 ;; HHH___________________________________________________________________
+
+(defun disable-xfk (buf)
+  (if (member major-mode xfk-inhibit-modes)
+      (xah-fly-keys 0)
+    (xah-fly-keys t)))
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
