@@ -990,8 +990,6 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   (if xah-fly-keys
       ;; Construction:
       (progn
-        ;; (add-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-        ;; (add-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
         (add-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
@@ -1001,8 +999,6 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
         (xah-fly-command-mode-activate))
     (progn
       ;; Teardown:
-      ;; (remove-hook 'minibuffer-setup-hook 'xah-fly-insert-mode-activate)
-      ;; (remove-hook 'minibuffer-exit-hook 'xah-fly-command-mode-activate)
       (remove-hook 'isearch-mode-end-hook 'xah-fly-command-mode-activate)
       (xah-fly-insert-mode-init :no-indication)
       (setq mode-line-front-space (propertize xah-fly-emacs-mode-indicator 'face 'xfk-emacs-mode-indicator))
