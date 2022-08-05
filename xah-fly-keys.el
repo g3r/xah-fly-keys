@@ -963,12 +963,6 @@ Version: 2017-07-07"
   (xah-fly-command-mode-init)
   (run-hooks 'xah-fly-command-mode-activate-hook))
 
-(defun xah-fly-command-mode-activate-no-hook ()
-  "Activate command mode. Does not run `xah-fly-command-mode-activate-hook'
-Version: 2017-07-07"
-  (interactive)
-  (xah-fly-command-mode-init))
-
 (defun xah-fly-insert-mode-activate ()
   "Activate insertion mode.
 Version: 2017-07-07"
