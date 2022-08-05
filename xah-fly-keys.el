@@ -950,12 +950,6 @@ Version: 2022-07-06"
     (setq mode-line-front-space (propertize xah-fly-insert-mode-indicator 'face 'xfk-insert-mode-indicator)))
   (force-mode-line-update))
 
-(defun xah-fly-save-buffer-if-file ()
-  "Save current buffer if it is a file."
-  (interactive)
-  (when (buffer-file-name)
-    (save-buffer)))
-
 (defun xah-fly-command-mode-activate ()
   "Activate command mode and run `xah-fly-command-mode-activate-hook'
 Version: 2017-07-07"
