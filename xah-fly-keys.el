@@ -968,8 +968,12 @@ Version: 2017-07-07"
 
 (defun disable-xfk (buf)
   (if (member major-mode xfk-inhibit-modes)
-      (xah-fly-keys 0)
-    (xah-fly-keys t)))
+      (progn
+	(xah-fly-keys 0)
+	(set-face-background 'cursor "yellow green"))
+    (progn
+      (set-face-background 'cursor "firebrick1")
+      (xah-fly-keys t))))
 
 ;;;###autoload
 (define-minor-mode xah-fly-keys
