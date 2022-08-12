@@ -967,7 +967,7 @@ Version: 2017-07-07"
 ;; HHH___________________________________________________________________
 
 (defun disable-xfk (buf)
-  (if (member major-mode xfk-inhibit-modes)
+  (if (or (default-value buffer-read-only) (member major-mode xfk-inhibit-modes))
       (progn
 	(xah-fly-keys 0)
 	(set-face-background 'cursor "yellow green"))
