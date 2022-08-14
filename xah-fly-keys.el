@@ -966,7 +966,8 @@ Version: 2017-07-07"
 
 ;; HHH___________________________________________________________________
 
-(defun disable-xfk (buf)
+(defun disable-xfk (&optional buf)
+  (ignore buf)
   (if (or (default-value buffer-read-only) (member major-mode xfk-inhibit-modes))
       (progn
 	(xah-fly-keys 0)
