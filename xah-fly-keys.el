@@ -649,13 +649,6 @@ Version: 2020-04-18"
   "Backward-compatibility map for `xah-fly-keys' minor mode.
 If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, point to points to `xah-fly-command-map'.")
 
-(make-obsolete-variable
- 'xah-fly-key-map
- "Put bindings for command mode in `xah-fly-command-map', bindings for
-insert mode in `xah-fly-insert-map' and bindings that are common to both
-command and insert modes in `xah-fly-shared-map'."
- "2020-04-16")
-
 (defvar xah-fly-shared-map (make-sparse-keymap)
   "Parent keymap of `xah-fly-command-map' and `xah-fly-insert-map'.
 
@@ -970,6 +963,13 @@ Version: 2017-07-07"
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
 ;; HHH___________________________________________________________________
+
+(unless (display-graphic-p)
+  (add-hook 'xah-fly-insert-mode-activate-hook
+            (lambda () (send-string-to-terminal "\033[6 q")))
+  (add-hook 'xah-fly-command-mode-activate-hook
+            (lambda () (send-string-to-terminal "\033[0 q")))
+  (add-hook 'kill-emacs-hook (lambda () (send-string-to-terminal "\033[0 q"))))
 
 (defun disable-xfk (&optional buf)
   (ignore buf)
