@@ -574,10 +574,6 @@ Version: 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-(if (version<= emacs-version "26.0.50")
-    (defalias 'xah-display-line-numbers-mode #'linum-mode)
-  (defalias 'xah-display-line-numbers-mode #'global-display-line-numbers-mode))
-
 (defun xah-clean-whitespace ()
   "Delete trailing whitespace, and replace repeated blank lines to just 1.
 Only space and tab is considered whitespace here.
