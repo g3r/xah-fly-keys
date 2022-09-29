@@ -575,18 +575,6 @@ Version: 2016-06-19"
         (progn (setq i 100))))))
 
 ;; HHH___________________________________________________________________
-;; G3R functions
-
-(defun g3r-toggle-maximize-buffer ()
-  "Toggles fullscreen/zoom for currently selected buffer"
-  (interactive)
-  (if (= 1 (length (window-list)))
-      (jump-to-register '_)
-    (progn
-      (window-configuration-to-register '_)
-      (delete-other-windows))))
-
-;; HHH___________________________________________________________________
 ;; key maps for conversion
 
 (defun xah-fly--key-char (Charstr)
@@ -777,7 +765,6 @@ minor modes loaded later may override bindings in this map.")
    ("3"   . visual-line-mode)
    ("4"   . global-display-line-numbers-mode)
    ("e"   . eshell)
-   ("f"   . g3r-toggle-maximize-buffer)
    ("o"   . variable-pitch-mode)
    ("u"   . shell)
    ("v"   . visual-line-mode)
