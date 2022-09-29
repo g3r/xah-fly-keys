@@ -846,7 +846,8 @@ minor modes loaded later may override bindings in this map.")
    ("." . sort-lines)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
-))
+   ("u" . ibuffer)
+   ))
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-w-keymap)
