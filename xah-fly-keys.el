@@ -834,8 +834,8 @@ minor modes loaded later may override bindings in this map.")
    ("m" . eval-last-sexp)
    ("o" . window-swap-states)
    ("p" . eval-expression)
-   ("u" . eval-region)
    ("q" . save-buffers-kill-terminal)
+   ("u" . eval-region)
 ))
 
 ;; (xah-fly--define-keys
