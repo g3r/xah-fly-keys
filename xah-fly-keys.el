@@ -574,28 +574,6 @@ Version: 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-(defun xah-clean-whitespace ()
-  "Delete trailing whitespace, and replace repeated blank lines to just 1.
-Only space and tab is considered whitespace here.
-Works on whole buffer or selection, respects `narrow-to-region'.
-
-URL `http://xahlee.info/emacs/emacs/elisp_compact_empty_lines.html'
-Version: 2017-09-22 2021-08-27"
-  (interactive)
-  (let ($begin $end)
-    (if (region-active-p)
-        (setq $begin (region-beginning) $end (region-end))
-      (setq $begin (point-min) $end (point-max)))
-    (save-excursion
-      (save-restriction
-        (narrow-to-region $begin $end)
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\n" nil 1) (replace-match "\n"))
-        (goto-char (point-min))
-        (while (re-search-forward "\n\n\n+" nil 1) (replace-match "\n\n"))
-        (goto-char (point-max))
-        (while (eq (char-before) ? ) (delete-char -1))))))
-
 ;; HHH___________________________________________________________________
 ;; G3R functions
 
@@ -842,7 +820,6 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-t-keymap)
  '(
-   ("SPC" . xah-clean-whitespace)
    ("." . sort-lines)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
