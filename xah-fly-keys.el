@@ -951,7 +951,7 @@ Version: 2017-07-07"
 URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
   :group 'xah-fly-keys
   :global t
-  :lighter "XFK"
+  :lighter " XFK"
   :keymap xah-fly-insert-map
   (delete-selection-mode 1)
   (setq shift-select-mode nil)
