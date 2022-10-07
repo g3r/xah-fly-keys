@@ -863,6 +863,7 @@ minor modes loaded later may override bindings in this map.")
    ("s" . save-buffer)
    ("t" . xah-fly-t-keymap)
    ("u" . switch-to-buffer)
+   ("v" . vc-prefix-map)
    ("w" . xah-fly-w-keymap)
    ))
 
