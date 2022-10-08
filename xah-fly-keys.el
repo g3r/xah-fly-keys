@@ -586,7 +586,7 @@ Version: 2022-08-10"
           (lambda ($pair)
             `(define-key
                ,$keymapName
-               (kbd (,#'identity ,(car $pair)))
+               (kbd ,(car $pair))
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
