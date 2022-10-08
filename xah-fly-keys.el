@@ -577,30 +577,16 @@ Version: 2016-06-19"
 ;; HHH___________________________________________________________________
 ;; key maps for conversion
 
-(defun xah-fly--key-char (Charstr)
-  "Return the corresponding char Charstr according to
-`xah-fly--current-layout-kmap'.
-Charstr must be a string of single char. If more than 1 char,
-return it unchanged.
-Version 2020-04-18"
-  (interactive)
-  (if (> (length Charstr) 1)
-      Charstr
-    (let (($result (assoc Charstr nil)))
-      (if $result (cdr $result) Charstr ))))
-
-(defmacro xah-fly--define-keys (KeymapName KeyCmdAlist &optional DirectQ)
+(defmacro xah-fly--define-keys (KeymapName KeyCmdAlist)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
-The key is remapped from Dvorak to the current keyboard layout
-by `xah-fly--key-char'.
-Version: 2020-04-18"
+Version: 2022-08-10"
   (let (($keymapName (make-symbol "keymap-name")))
     `(let ((,$keymapName , KeymapName))
        ,@(mapcar
           (lambda ($pair)
             `(define-key
                ,$keymapName
-               (kbd (,(if DirectQ #'identity #'xah-fly--key-char) ,(car $pair)))
+               (kbd (,#'identity ,(car $pair)))
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
@@ -705,8 +691,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  xah-fly-shared-map
- '(("<home>" . xah-fly-command-mode-activate))
- :direct)
+ '(("<home>" . xah-fly-command-mode-activate)))
 
 ;; HHH___________________________________________________________________
 ;; commands related to highlight
