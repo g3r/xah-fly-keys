@@ -586,7 +586,7 @@ Version: 2022-08-10"
           (lambda ($pair)
             `(define-key
                ,$keymapName
-               (kbd ,(car $pair))
+               ,(car $pair)
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
@@ -644,8 +644,8 @@ minor modes loaded later may override bindings in this map.")
    ("~" . nil)
    (":" . nil)
 
-   ("SPC" . xah-fly-leader-key-map)
-   ("DEL" . xah-fly-leader-key-map)
+   (" " . xah-fly-leader-key-map) ;; SPC
+   ("" . xah-fly-leader-key-map) ;; DEL
    ("'" . xah-reformat-lines)
    ("," . xah-shrink-whitespaces)
    ("." . backward-kill-word)
@@ -691,7 +691,7 @@ minor modes loaded later may override bindings in this map.")
 
 (xah-fly--define-keys
  xah-fly-shared-map
- '(("<home>" . xah-fly-command-mode-activate)))
+ '(([home] . xah-fly-command-mode-activate)))
 
 ;; HHH___________________________________________________________________
 ;; commands related to highlight
@@ -743,7 +743,7 @@ minor modes loaded later may override bindings in this map.")
  ;; commands here are “harmless”, they don't modify text etc. they turn on modes, change display, prompt, start shell, etc.
  (define-prefix-command 'xah-fly-n-keymap)
  '(
-   ("SPC" . whitespace-mode)
+   (" " . whitespace-mode)
    (","   . abbrev-mode)
    ("."   . toggle-frame-fullscreen)
    ("2"   . global-hl-line-mode)
@@ -757,24 +757,9 @@ minor modes loaded later may override bindings in this map.")
    ))
 
 (xah-fly--define-keys
- (define-prefix-command 'xah-fly-p-keymap)
- '(
-   ("b" . project-switch-to-buffer)
-   ("c" . project-compile)
-   ("d" . project-find-dir)
-   ("D" . project-dired)
-   ("e" . project-eshell)
-   ("f" . project-find-file)
-   ("g" . project-find-regexp)
-   ("p" . project-switch-project)
-   ("s" . project-shell)
-   ("v" . project-vc-dir)
-   ))
-
-(xah-fly--define-keys
  ;; kinda replacement related
  (define-prefix-command 'xah-fly-r-keymap)
- '(("SPC" . rectangle-mark-mode)
+ '((" " . rectangle-mark-mode) ;; SPC
    (","   . apply-macro-to-region-lines)
    ("."   . kmacro-start-macro)
    ("c"   . replace-rectangle)
@@ -820,9 +805,8 @@ minor modes loaded later may override bindings in this map.")
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-leader-key-map)
  '(
-   ;; ("SPC" . xah-fly-insert-mode-activate)
-   ("SPC" . project-find-file)
-   ("<home>" . keyboard-escape-quit)
+   (" " . project-find-file) ;; SPC
+   ([home] . keyboard-escape-quit)
    ;; ("." . xah-fly-dot-keymap)
    ("'" . xah-fill-or-unfill)
    ("," . xref-go-back)
@@ -843,7 +827,7 @@ minor modes loaded later may override bindings in this map.")
    ("m" . dired-jump)
    ("n" . xah-fly-n-keymap)
    ("o" . exchange-point-and-mark)
-   ("p" . xah-fly-p-keymap)
+   ("p" . project-prefix-map)
    ("r" . xah-fly-r-keymap)
    ("s" . save-buffer)
    ("t" . xah-fly-t-keymap)
