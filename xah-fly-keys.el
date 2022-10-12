@@ -391,6 +391,11 @@ Version: 2016-10-25"
 ;; HHH___________________________________________________________________
 ;; insertion commands
 
+(defun g3r/open-line-below ()
+  (interactive)
+  (end-of-line)
+  (newline-and-indent)
+  (xah-fly-insert-mode-activate))
 
 ;; HHH___________________________________________________________________
 ;; text selection
@@ -674,7 +679,7 @@ minor modes loaded later may override bindings in this map.")
    ("l" . recenter-top-bottom)
    ("m" . backward-list)
    ("n" . forward-char)
-   ("o" . open-line)
+   ("o" . g3r/open-line-below)
    ("p" . kill-word)
    ("q" . xah-cut-line-or-region)
    ("r" . forward-word)
