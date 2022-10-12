@@ -912,7 +912,7 @@ Version: 2017-07-07"
   (ignore buf)
   (if (or (default-value buffer-read-only) (member major-mode xfk-inhibit-modes))
       (progn
-	(xah-fly-keys 0)
+	(xah-fly-keys -1)
 	(set-face-background 'cursor "yellow green"))
     (progn
       (set-face-background 'cursor "firebrick1")
