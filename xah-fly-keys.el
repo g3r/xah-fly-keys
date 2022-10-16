@@ -491,45 +491,14 @@ Version: 2022-08-10"
 ;; HHH___________________________________________________________________
 ;; keymaps
 
-(defvar xah-fly-key-map (make-sparse-keymap)
-  "Backward-compatibility map for `xah-fly-keys' minor mode.
-If `xah-fly-insert-state-p' is true, point to `xah-fly-insert-map', else, point to points to `xah-fly-command-map'.")
+(defvar-keymap xah-fly-key-map
+  :doc "Backward-compatibility map for `xah-fly-keys' minor mode.")
 
-(defvar xah-fly-shared-map (make-sparse-keymap)
-  "Parent keymap of `xah-fly-command-map' and `xah-fly-insert-map'.
+(defvar-keymap xah-fly-command-map
+  :doc "Keymap that takes precedence over all other keymaps in command mode.")
 
-Define keys that are available in both command and insert modes here, like
-`xah-fly-mode-toggle'")
-
-;; (cons 'keymap xah-fly-shared-map) makes a new keymap with `xah-fly-shared-map' as its parent. See info node (elisp)Inheritance and Keymaps.
-(defvar xah-fly-command-map (cons 'keymap xah-fly-shared-map)
-  "Keymap that takes precedence over all other keymaps in command mode.
-
-Inherits bindings from `xah-fly-shared-map'. In command mode, if no binding
-is found in this map `xah-fly-shared-map' is checked, then if there is
-still no binding, the other active keymaps are checked like normal. However,
-if a key is explicitly bound to nil in this map, it will not be looked
-up in `xah-fly-shared-map' and lookup will skip directly to the normally
-active maps. In this way, bindings in `xah-fly-shared-map' can be disabled
-by this map.
-
-Effectively, this map takes precedence over all others when command mode
-is enabled.")
-
-(defvar xah-fly-insert-map (cons 'keymap xah-fly-shared-map)
-  "Keymap for bindings that will be checked in insert mode. Active whenever
-`xah-fly-keys' is non-nil.
-
-Inherits bindings from `xah-fly-shared-map'. In insert mode, if no binding
-is found in this map `xah-fly-shared-map' is checked, then if there is
-still no binding, the other active keymaps are checked like normal. However,
-if a key is explicitly bound to nil in this map, it will not be looked
-up in `xah-fly-shared-map' and lookup will skip directly to the normally
-active maps. In this way, bindings in `xah-fly-shared-map' can be disabled
-by this map.
-
-Keep in mind that this acts like a normal global minor mode map, so other
-minor modes loaded later may override bindings in this map.")
+(defvar-keymap xah-fly-insert-map
+  :doc "Keymap for bindings that will be checked in insert mode.")
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
@@ -587,7 +556,7 @@ minor modes loaded later may override bindings in this map.")
 ;; set control meta, etc keys
 
 (xah-fly--define-keys
- xah-fly-shared-map
+ xah-fly-insert-map
  '(([home] . xah-fly-command-mode-activate)))
 
 ;; HHH___________________________________________________________________
@@ -831,9 +800,7 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
 	(add-hook 'window-selection-change-functions #'disable-xfk)
         (when (and (keymapp xah-fly-key-map)
                    (not (memq xah-fly-key-map (list xah-fly-command-map
-                                                    xah-fly-insert-map))))
-          (set-keymap-parent xah-fly-key-map xah-fly-shared-map)
-          (setq xah-fly-shared-map xah-fly-key-map))
+                                                    xah-fly-insert-map)))))
         (xah-fly-command-mode-activate))
     (progn
       ;; Teardown:
