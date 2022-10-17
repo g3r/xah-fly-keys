@@ -798,9 +798,6 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
         (add-hook 'isearch-mode-end-hook             #'xah-fly-command-mode-activate)
 	(add-hook 'window-buffer-change-functions    #'disable-xfk)
 	(add-hook 'window-selection-change-functions #'disable-xfk)
-        (when (and (keymapp xah-fly-key-map)
-                   (not (memq xah-fly-key-map (list xah-fly-command-map
-                                                    xah-fly-insert-map)))))
         (xah-fly-command-mode-activate))
     (progn
       ;; Teardown:
