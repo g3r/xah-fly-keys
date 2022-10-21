@@ -807,12 +807,6 @@ URL `http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html'"
       ;;
       )))
 
-;; 2022-06-14 fix a emacs 28.1 bug.
-;; clear-transient-map bug
-;; http://xahlee.info/emacs/emacs/clear-transient-map_bug.html
-(defun xah-clear-pre-command-hook () (setq pre-command-hook nil))
-(add-hook 'xah-fly-insert-mode-activate-hook 'xah-clear-pre-command-hook)
-
 (provide 'xah-fly-keys)
 
 ;;; xah-fly-keys.el ends here
