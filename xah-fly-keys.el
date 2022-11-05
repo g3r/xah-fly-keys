@@ -21,7 +21,7 @@
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
-;; HHH___________________________________________________________________
+;; Code:
 
 (defgroup xah-fly-keys nil
   "Ergonomic modal keybinding minor mode."
