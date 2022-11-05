@@ -3,14 +3,21 @@
 ;; Copyright © 2013-2022 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.info/ )
+;; Maintainer: German Pacenza
 ;; Version: 16.15.20220314145449
 ;; Created: 10 Sep 2013
-;; Package-Requires: ((emacs "24.1"))
+;; Package-Requires: ((emacs "28.2"))
 ;; Keywords: convenience, emulations, vim, ergoemacs
-;; License: GPL v3. Tell your friends to buy a copy.
+;; License: GPL v3.
 ;; Homepage: http://xahlee.info/emacs/misc/ergoemacs_vi_mode.html
 
 ;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; xah-fly-keys is a efficient keybinding for emacs. It is modal like
+;; vi, but key choices are based on statistics of command call
+;; frequency.
 
 ;; If you like this project, Buy Xah Emacs Tutorial http://xahlee.info/emacs/emacs/buy_xah_emacs_tutorial.html or make a donation. Thanks.
 
