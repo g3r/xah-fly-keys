@@ -694,6 +694,7 @@ Version: 2022-08-10"
    ("." . sort-lines)
    ("d" . mark-defun)
    ("e" . list-matching-lines)
+   ("h" . xah-pop-local-mark-ring)
    ("u" . ibuffer)
    ))
 
