@@ -94,6 +94,58 @@ Version: 2021-08-12"
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
 
+;; cursor movement
+
+;; cursor movement
+
+(defun xah-pop-local-mark-ring ()
+  "Move cursor to last mark position of current buffer.
+Call this repeatedly will cycle all positions in `mark-ring'.
+URL `http://xahlee.info/emacs/emacs/emacs_jump_to_previous_position.html'
+Version: 2016-04-04"
+  (interactive)
+  (set-mark-command t))
+
+(defun xah-beginning-of-line-or-block ()
+  "Move cursor to beginning of line or previous block.
+• When called first time, move cursor to beginning of char in current line. (if already, move to beginning of line.)
+• When called again, move cursor backward by jumping over any sequence of whitespaces containing 2 blank lines.
+• if `visual-line-mode' is on, beginning of line means visual line.
+URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+Version: 2018-06-04 2021-03-16 2022-03-30 2022-07-03 2022-07-06"
+  (interactive)
+  (let ((xp (point)))
+    (if (or (equal (point) (line-beginning-position))
+            (eq last-command this-command))
+        (when
+            (re-search-backward "\n[\t\n ]*\n+" nil 1)
+          (skip-chars-backward "\n\t ")
+          (forward-char))
+      (if visual-line-mode
+          (beginning-of-visual-line)
+        (if (eq major-mode 'eshell-mode)
+            (progn
+              (declare-function eshell-bol "esh-mode.el" ())
+              (eshell-bol))
+          (back-to-indentation)
+          (when (eq xp (point))
+            (beginning-of-line)))))))
+
+(defun xah-end-of-line-or-block ()
+  "Move cursor to end of line or next block.
+• When called first time, move cursor to end of line.
+• When called again, move cursor forward by jumping over any sequence of whitespaces containing 2 blank lines.
+• if `visual-line-mode' is on, end of line means visual line.
+URL `http://xahlee.info/emacs/emacs/emacs_keybinding_design_beginning-of-line-or-block.html'
+Version: 2018-06-04 2021-03-16 2022-03-05"
+  (interactive)
+  (if (or (equal (point) (line-end-position))
+          (eq last-command this-command))
+      (re-search-forward "\n[\t\n ]*\n+" nil 1)
+    (if visual-line-mode
+        (end-of-visual-line)
+      (end-of-line))))
+
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -529,7 +581,7 @@ Version: 2022-08-10"
    ("b" . isearch-forward)
    ("B" . query-replace)
    ("c" . previous-line)
-   ("d" . back-to-indentation)
+   ("d" . xah-beginning-of-line-or-block)
    ("e" . delete-backward-char)
    ("f" . undo)
    ("g" . backward-word)
@@ -544,7 +596,7 @@ Version: 2022-08-10"
    ("p" . kill-word)
    ("q" . xah-cut-line-or-region)
    ("r" . forward-word)
-   ("s" . end-of-line)
+   ("s" . xah-end-of-line-or-block)
    ("t" . next-line)
    ("u" . xah-fly-insert-mode-activate)
    ("v" . forward-list)
