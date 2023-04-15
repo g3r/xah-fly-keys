@@ -94,7 +94,6 @@ Version: 2021-08-12"
       (cons (region-beginning) (region-end))
     (xah-get-bounds-of-block)))
 
-;; HHH___________________________________________________________________
 ;; editing commands
 
 (defun xah-copy-line-or-region ()
@@ -395,7 +394,6 @@ Version: 2016-10-25"
             (comment-or-uncomment-region $lbp $lep)
             (forward-line )))))))
 
-;; HHH___________________________________________________________________
 ;; insertion commands
 
 (defun g3r/open-line-below ()
@@ -404,7 +402,6 @@ Version: 2016-10-25"
   (newline-and-indent)
   (xah-fly-insert-mode-activate))
 
-;; HHH___________________________________________________________________
 ;; text selection
 
 (defun xah-select-line ()
@@ -431,7 +428,6 @@ Version: 2017-11-01 2021-03-19"
         (end-of-line)
         (set-mark (line-beginning-position))))))
 
-;; HHH___________________________________________________________________
 ;; misc
 
 (defun xah-user-buffer-p ()
@@ -479,7 +475,6 @@ Version: 2016-06-19"
                  (setq i (1+ i)))
         (progn (setq i 100))))))
 
-;; HHH___________________________________________________________________
 ;; key maps for conversion
 
 (defmacro xah-fly--define-keys (KeymapName KeyCmdAlist)
@@ -495,7 +490,6 @@ Version: 2022-08-10"
                ,(list 'quote (cdr $pair))))
           (cadr KeyCmdAlist)))))
 
-;; HHH___________________________________________________________________
 ;; keymaps
 
 (defvar-keymap xah-fly-key-map
@@ -509,7 +503,6 @@ Version: 2022-08-10"
 
 (defvar xah-fly--deactivate-command-mode-func nil)
 
-;; HHH___________________________________________________________________
 ;; setting keys
 
 (xah-fly--define-keys
@@ -559,21 +552,17 @@ Version: 2022-08-10"
    ("y" . set-mark-command)
    ("z" . universal-argument)))
 
-;; HHH___________________________________________________________________
 ;; set control meta, etc keys
 
 (xah-fly--define-keys
  xah-fly-insert-map
  '(([home] . xah-fly-command-mode-activate)))
 
-;; HHH___________________________________________________________________
 ;; commands related to highlight
 ;; (xah-fly--define-keys
  ;; (define-prefix-command 'xah-fly-dot-keymap)
  ;; '(
    ;; ))
-
-;; HHH___________________________________________________________________
 
 (xah-fly--define-keys
  (define-prefix-command 'xah-fly-c-keymap)
@@ -709,15 +698,12 @@ Version: 2022-08-10"
    ("w" . xah-fly-w-keymap)
    ))
 
-;; HHH___________________________________________________________________
 ;; Movement key integrations with built-in Emacs packages
 
 (xah-fly--define-keys
  indent-rigidly-map
  '(("h" . indent-rigidly-left)
    ("n" . indent-rigidly-right)))
-
-;; HHH___________________________________________________________________
 
 (defvar xah-fly-insert-state-p t "non-nil means insertion mode is on.")
 
@@ -767,7 +753,8 @@ Version: 2017-07-07"
   (xah-fly-insert-mode-init)
   (run-hooks 'xah-fly-insert-mode-activate-hook))
 
-;; HHH___________________________________________________________________
+
+;;  g3r: change cursor in terminal mode
 
 (unless (display-graphic-p)
   (add-hook 'xah-fly-insert-mode-activate-hook
