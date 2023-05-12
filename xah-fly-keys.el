@@ -788,7 +788,7 @@ Version: 2022-07-06"
   (funcall xah-fly--deactivate-command-mode-func)
   (unless no-indication
     ;; (modify-all-frames-parameters '((cursor-type . bar)))
-    (set-face-background 'cursor "yellow green")
+    (set-face-background 'cursor "dark blue")
     (setq mode-line-front-space (propertize xah-fly-insert-mode-indicator 'face 'xfk-insert-mode-indicator)))
   (force-mode-line-update))
 
@@ -821,7 +821,7 @@ Version: 2017-07-07"
   (if (or (default-value buffer-read-only) (member major-mode xfk-inhibit-modes))
       (progn
 	(xah-fly-keys -1)
-	(set-face-background 'cursor "yellow green"))
+	(set-face-background 'cursor "dark blue"))
     (progn
       (set-face-background 'cursor "firebrick1")
       (xah-fly-keys t))))
