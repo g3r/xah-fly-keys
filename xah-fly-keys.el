@@ -76,15 +76,15 @@
 (defun xah-get-bounds-of-block ()
   "Return the boundary (START . END) of current block.
 Version: 2021-08-12"
-  (let ( $p1 $p2 ($blankRegex "\n[ \t]*\n"))
+  (let ( xp1 xp2 (xblankRegex "\n[ \t]*\n"))
     (save-excursion
-      (setq $p1 (if (re-search-backward $blankRegex nil 1)
+      (setq xp1 (if (re-search-backward xblankRegex nil 1)
                     (goto-char (match-end 0))
                   (point)))
-      (setq $p2 (if (re-search-forward $blankRegex nil 1)
+      (setq xp2 (if (re-search-forward xblankRegex nil 1)
                     (match-beginning 0)
                   (point))))
-    (cons $p1 $p2 )))
+    (cons xp1 xp2 )))
 
 (defun xah-get-bounds-of-block-or-region ()
   "If region is active, return its boundary,
@@ -258,10 +258,10 @@ Version: 2017-07-25 2020-09-08"
 and highlight changes made.
 Version 2022-01-20"
   (interactive)
-  (let ($p1 $p2)
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+  (let (xp1 xp2)
+    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (save-restriction
-      (narrow-to-region $p1 $p2)
+      (narrow-to-region xp1 xp2)
       (goto-char (point-min))
       (while
           (re-search-forward ",\\b" nil t)
@@ -277,12 +277,12 @@ Version 2022-01-20"
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version: 2018-04-02"
   (interactive)
-  (let ($p3 $p4)
+  (let (xp3 xp4)
           (skip-chars-backward "\n")
-          (setq $p3 (point))
+          (setq xp3 (point))
           (skip-chars-forward "\n")
-          (setq $p4 (point))
-          (delete-region $p3 $p4)))
+          (setq xp4 (point))
+          (delete-region xp3 xp4)))
 
 (defun xah-fly-delete-spaces ()
   "Delete space, tab, IDEOGRAPHIC SPACE (U+3000) around cursor.
@@ -304,45 +304,45 @@ leaving one space or newline at each step, till no more white space.
 URL `http://xahlee.info/emacs/emacs/emacs_shrink_whitespace.html'
 Version: 2014-10-21 2021-11-26 2021-11-30"
   (interactive)
-  (let* (($eol-count 0)
-         ($p0 (point))
-         $p1 ; whitespace begin
-         $p2 ; whitespace end
-         ($charBefore (char-before))
-         ($charAfter (char-after))
-         ($space-neighbor-p (or (eq $charBefore 32) (eq $charBefore 9) (eq $charAfter 32) (eq $charAfter 9))))
+  (let* ((xeol-count 0)
+         (xp0 (point))
+         xp1 ; whitespace begin
+         xp2 ; whitespace end
+         (xcharBefore (char-before))
+         (xcharAfter (char-after))
+         (xspace-neighbor-p (or (eq xcharBefore 32) (eq xcharBefore 9) (eq xcharAfter 32) (eq xcharAfter 9))))
     (skip-chars-backward " \n\t　")
-    (setq $p1 (point))
-    (goto-char $p0)
+    (setq xp1 (point))
+    (goto-char xp0)
     (skip-chars-forward " \n\t　")
-    (setq $p2 (point))
-    (goto-char $p1)
-    (while (search-forward "\n" $p2 t)
-      (setq $eol-count (1+ $eol-count)))
-    (goto-char $p0)
+    (setq xp2 (point))
+    (goto-char xp1)
+    (while (search-forward "\n" xp2 t)
+      (setq xeol-count (1+ xeol-count)))
+    (goto-char xp0)
     (cond
-     ((eq $eol-count 0)
-      (if (> (- $p2 $p1) 1)
+     ((eq xeol-count 0)
+      (if (> (- xp2 xp1) 1)
           (progn
             (delete-horizontal-space) (insert " "))
         (progn (delete-horizontal-space))))
-     ((eq $eol-count 1)
-      (if $space-neighbor-p
+     ((eq xeol-count 1)
+      (if xspace-neighbor-p
           (xah-fly-delete-spaces)
         (progn (xah-delete-blank-lines) (insert " "))))
-     ((eq $eol-count 2)
-      (if $space-neighbor-p
+     ((eq xeol-count 2)
+      (if xspace-neighbor-p
           (xah-fly-delete-spaces)
         (progn
           (xah-delete-blank-lines)
           (insert "\n"))))
-     ((> $eol-count 2)
-      (if $space-neighbor-p
+     ((> xeol-count 2)
+      (if xspace-neighbor-p
           (xah-fly-delete-spaces)
         (progn
-          (goto-char $p2)
+          (goto-char xp2)
           (search-backward "\n")
-          (delete-region $p1 (point))
+          (delete-region xp1 (point))
           (insert "\n"))))
      (t (progn
           (message "nothing done. logic error 40873. shouldn't reach here"))))))
@@ -358,15 +358,15 @@ URL `http://xahlee.info/emacs/emacs/modernization_fill-paragraph.html'
 Version: 2020-11-22 2021-08-13"
   (interactive)
   ;; This command symbol has a property “'longline-p”, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ( ($isLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
+  (let ( (xisLongline (if (eq last-command this-command) (get this-command 'longline-p) t))
          (deactivate-mark nil)
-         $p1 $p2 )
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
-    (if $isLongline
-        (fill-region $p1 $p2)
+         xp1 xp2 )
+    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
+    (if xisLongline
+        (fill-region xp1 xp2)
       (let ((fill-column most-positive-fixnum ))
-        (fill-region $p1 $p2)))
-    (put this-command 'longline-p (not $isLongline))))
+        (fill-region xp1 xp2)))
+    (put this-command 'longline-p (not xisLongline))))
 
 (defun xah-reformat-whitespaces-to-one-space (Begin End)
   "Replace whitespaces by one space.
@@ -391,17 +391,17 @@ If `universal-argument' is called first, ask user for max width.
 URL `http://xahlee.info/emacs/emacs/emacs_reformat_lines.html'
 Version: 2018-12-16 2021-07-06 2021-08-12"
   (interactive)
-  (let ( $p1 $p2 $minlen )
-    (setq $minlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
+  (let ( xp1 xp2 xminlen )
+    (setq xminlen (if MinLength MinLength (if current-prefix-arg (prefix-numeric-value current-prefix-arg) fill-column)))
     (if (and Begin End)
-        (setq $p1 Begin $p2 End)
-      (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds))))
+        (setq xp1 Begin xp2 End)
+      (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds))))
     (save-excursion
       (save-restriction
-        (narrow-to-region $p1 $p2)
+        (narrow-to-region xp1 xp2)
         (goto-char (point-min))
         (while (re-search-forward " +" nil 1)
-          (when (> (- (point) (line-beginning-position)) $minlen)
+          (when (> (- (point) (line-beginning-position)) xminlen)
             (replace-match "\n" )))))))
 
 (defun xah-reformat-lines (&optional Width)
@@ -414,17 +414,17 @@ Created 2016 or before.
 Version: 2021-07-05 2021-08-13 2022-03-12"
   (interactive)
   ;; This command symbol has a property 'is-long-p, the possible values are t and nil. This property is used to easily determine whether to compact or uncompact, when this command is called again
-  (let ($isLong $width $p1 $p2)
-    (setq $width (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
-    (setq $isLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
-    (let (($bds (xah-get-bounds-of-block-or-region))) (setq $p1 (car $bds) $p2 (cdr $bds)))
+  (let (xisLong xwidth xp1 xp2)
+    (setq xwidth (if Width Width (if current-prefix-arg (prefix-numeric-value current-prefix-arg) 70)))
+    (setq xisLong (if (eq last-command this-command) (get this-command 'is-long-p) nil))
+    (let ((xbds (xah-get-bounds-of-block-or-region))) (setq xp1 (car xbds) xp2 (cdr xbds)))
     (if current-prefix-arg
-        (xah-reformat-to-multi-lines $p1 $p2 $width)
-      (if $isLong
-          (xah-reformat-to-multi-lines $p1 $p2 $width)
+        (xah-reformat-to-multi-lines xp1 xp2 xwidth)
+      (if xisLong
+          (xah-reformat-to-multi-lines xp1 xp2 xwidth)
         (progn
-          (xah-reformat-whitespaces-to-one-space $p1 $p2))))
-    (put this-command 'is-long-p (not $isLong))))
+          (xah-reformat-whitespaces-to-one-space xp1 xp2))))
+    (put this-command 'is-long-p (not xisLong))))
 
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
@@ -434,16 +434,16 @@ Version: 2016-10-25"
   (interactive)
   (if (region-active-p)
       (comment-dwim nil)
-    (let (($lbp (line-beginning-position))
-          ($lep (line-end-position)))
-      (if (eq $lbp $lep)
+    (let ((xlbp (line-beginning-position))
+          (xlep (line-end-position)))
+      (if (eq xlbp xlep)
           (progn
             (comment-dwim nil))
-        (if (eq (point) $lep)
+        (if (eq (point) xlep)
             (progn
               (comment-dwim nil))
           (progn
-            (comment-or-uncomment-region $lbp $lep)
+            (comment-or-uncomment-region xlbp xlep)
             (forward-line )))))))
 
 ;; insertion commands
@@ -465,9 +465,9 @@ Version: 2017-11-01 2021-03-19"
   (interactive)
   (if (region-active-p)
       (if visual-line-mode
-          (let (($p1 (point)))
+          (let ((xp1 (point)))
                 (end-of-visual-line 1)
-                (when (eq $p1 (point))
+                (when (eq xp1 (point))
                   (end-of-visual-line 2)))
         (progn
           (forward-line 1)
@@ -532,14 +532,14 @@ Version: 2016-06-19"
 (defmacro xah-fly--define-keys (KeymapName KeyCmdAlist)
   "Map `define-key' over a alist KeyCmdAlist, with key layout remap.
 Version: 2022-08-10"
-  (let (($keymapName (make-symbol "keymap-name")))
-    `(let ((,$keymapName , KeymapName))
+  (let ((xkeymapName (make-symbol "keymap-name")))
+    `(let ((,xkeymapName , KeymapName))
        ,@(mapcar
-          (lambda ($pair)
+          (lambda (xpair)
             `(define-key
-               ,$keymapName
-               ,(car $pair)
-               ,(list 'quote (cdr $pair))))
+               ,xkeymapName
+               ,(car xpair)
+               ,(list 'quote (cdr xpair))))
           (cadr KeyCmdAlist)))))
 
 ;; keymaps
